@@ -72,14 +72,6 @@ body {
     outline-offset: 1px;
 }
 
-.eyebrow {
-    margin: 0 0 2px;
-    font-size: 10px;
-    letter-spacing: 0.42em;
-    color: var(--brass-dim);
-    font-weight: 600;
-}
-
 .app-header h1 {
     margin: 0;
     font-size: 19px;

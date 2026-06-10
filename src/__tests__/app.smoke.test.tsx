@@ -14,7 +14,7 @@ function renderAt(path: string): string {
 describe('앱 스모크 테스트', () => {
     it('메인 페이지에 메뉴가 출력된다', () => {
         const html = renderAt('/');
-        expect(html).toContain('리치드릴');
+        expect(html).toContain('richdrill');
         expect(html).toContain('점수 계산 연습');
         expect(html).toContain('href="/score"');
     });

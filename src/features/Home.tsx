@@ -6,8 +6,7 @@ export function Home() {
     return (
         <>
             <header className="app-header">
-                <p className="eyebrow">RIICHI DRILL</p>
-                <h1>리치드릴</h1>
+                <h1>richdrill</h1>
             </header>
 
             <nav className="menu-grid">

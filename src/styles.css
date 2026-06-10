@@ -191,6 +191,38 @@ body {
     filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 8px rgba(216, 180, 90, 0.55));
 }
 
+/* 도라·적도라: 주기적으로 광택이 흐르는 이펙트 */
+.tile-dora {
+    overflow: hidden;
+}
+
+.tile-dora::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.55) 48%,
+        rgba(255, 255, 255, 0.85) 50%,
+        rgba(255, 255, 255, 0.55) 52%,
+        transparent 65%
+    );
+    transform: translateX(-120%);
+    animation: dora-shine 3.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes dora-shine {
+    0% {
+        transform: translateX(-120%);
+    }
+    38%,
+    100% {
+        transform: translateX(120%);
+    }
+}
+
 /* 오름패 강조: 론은 빨강, 쯔모는 녹색 (상단 배지와 동일 색) */
 .win-ron .tile-win {
     outline-color: var(--vermilion);

@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { generateProblem, type GeneratedProblem } from '../core/generator';
-import type { Payment, ScoringResult } from '../core/types';
+import { nextDoraId, tileId } from '../core/tiles';
+import type { Payment, ScoringResult, Tile } from '../core/types';
 import { MeldView, TileView } from '../components/Tiles';
 
 type Phase = 'challenge' | 'answer';
@@ -33,6 +34,9 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
     const dealer = p.seatWind === 1;
 
     const grade = gradeAnswer(r, inputs, hanFuMode);
+
+    const doraIds = new Set(p.doraIndicators.map((t) => nextDoraId(tileId(t))));
+    const isDora = (t: Tile) => doraIds.has(tileId(t));
 
     const submit = () => setPhase('answer');
 
@@ -69,12 +73,12 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
                 <div className="hand-area">
                     <div className={`hand-tiles ${tsumo ? 'win-tsumo' : 'win-ron'}`}>
                         {p.hand.map((t, i) => (
-                            <TileView key={i} tile={t} />
+                            <TileView key={i} tile={t} dora={isDora(t)} />
                         ))}
-                        <TileView tile={p.winningTile} win />
+                        <TileView tile={p.winningTile} win dora={isDora(p.winningTile)} />
                     </div>
                     {p.melds.map((m, i) => (
-                        <MeldView key={i} meld={m} />
+                        <MeldView key={i} meld={m} isDora={isDora} />
                     ))}
                 </div>
 

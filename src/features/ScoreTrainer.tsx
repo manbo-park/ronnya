@@ -70,16 +70,16 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
                     )}
                 </div>
 
-                <div className="hand-area">
-                    <div className={`hand-tiles ${tsumo ? 'win-tsumo' : 'win-ron'}`}>
+                <div className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'}`}>
+                    <div className="hand-tiles">
                         {p.hand.map((t, i) => (
                             <TileView key={i} tile={t} dora={isDora(t)} />
                         ))}
-                        <TileView tile={p.winningTile} win dora={isDora(p.winningTile)} />
                     </div>
                     {p.melds.map((m, i) => (
                         <MeldView key={i} meld={m} isDora={isDora} />
                     ))}
+                    <TileView tile={p.winningTile} win dora={isDora(p.winningTile)} />
                 </div>
 
                 {phase === 'challenge' ? (

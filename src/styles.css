@@ -11,8 +11,8 @@
     --muted: #9db5a6;
     --vermilion: #e2543a;
     --jade: #5fc28f;
-    /* 멘젠 13장 + 오름패가 한 줄에 들어가는 크기 */
-    --tile-w: clamp(16px, 5.2vw, 26px);
+    /* 멘젠 13장 그룹이 한 줄에 들어가는 크기 */
+    --tile-w: clamp(16px, 5.6vw, 30px);
 }
 
 * {
@@ -246,16 +246,11 @@ body {
     margin-bottom: 14px;
 }
 
+/* 한 그룹(손패/멘쯔) 안에서는 줄이 나뉘지 않는다 */
 .hand-tiles {
     display: flex;
-    flex-wrap: wrap;
     align-items: flex-end;
     gap: 2px;
-}
-
-/* 오름패: 손패 우측에 한 칸 띄워 표시 */
-.hand-tiles .tile-win {
-    margin-left: 10px;
 }
 
 .meld-tiles {

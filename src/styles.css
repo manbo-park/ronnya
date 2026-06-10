@@ -460,6 +460,45 @@ body {
     color: var(--muted);
 }
 
+/* ---- 메인 메뉴 ---- */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.menu-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px 14px;
+    background: linear-gradient(180deg, var(--panel), #0d3828);
+    border: 1px solid var(--panel-edge);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    text-decoration: none;
+}
+
+.menu-card:active {
+    transform: translateY(1px);
+}
+
+.menu-card:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 1px;
+}
+
+.menu-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.menu-desc {
+    font-size: 12px;
+    color: var(--muted);
+}
+
 /* ---- 기타 ---- */
 .app-footer {
     text-align: center;

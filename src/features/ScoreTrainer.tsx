@@ -23,6 +23,7 @@ export function ScoreTrainer() {
     const p = gp.problem;
     const r = gp.result;
     const tsumo = p.winType === 'tsumo';
+    const dealer = p.seatWind === 1;
 
     const correct = gradeAnswer(r, answer);
 
@@ -35,6 +36,9 @@ export function ScoreTrainer() {
         <div className="trainer">
             <section className="card">
                 <div className="badges">
+                    <span className={`badge badge-seat ${dealer ? 'b-dealer' : 'b-nondealer'}`}>
+                        {dealer ? '친' : '자'}
+                    </span>
                     {p.riichi === 2 && <span className="badge b-riichi">더블리치</span>}
                     {p.riichi === 1 && <span className="badge b-riichi">리치</span>}
                     {p.ippatsu && <span className="badge b-riichi">일발</span>}

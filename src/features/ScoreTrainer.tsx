@@ -6,25 +6,17 @@ import { MeldView, TileView } from '../components/Tiles';
 
 type Phase = 'challenge' | 'answer';
 
-interface Inputs {
-    score1: string; // 론 총액 / 친 쯔모 1명당 / 자 쯔모는 "자 친" 공백 구분 (예: 1000 2000)
-    han: string;
-    fu: string;
-}
-
-const EMPTY: Inputs = { score1: '', han: '', fu: '' };
 const DORA_INDICATOR_SLOTS = 5; // 왕패의 도라표시패 자리 수
 const NON_DEALER_TSUMO_RE = /^\d+\s+\d+$/;
-const FU_OPTIONS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 
-export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
+export function ScoreTrainer() {
     const [gp, setGp] = useState<GeneratedProblem>(() => generateProblem());
     const [phase, setPhase] = useState<Phase>('challenge');
-    const [inputs, setInputs] = useState<Inputs>(EMPTY);
+    const [answer, setAnswer] = useState('');
 
     const next = useCallback(() => {
         setGp(generateProblem());
-        setInputs(EMPTY);
+        setAnswer('');
         setPhase('challenge');
     }, []);
 
@@ -33,7 +25,7 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
     const tsumo = p.winType === 'tsumo';
     const dealer = p.seatWind === 1;
 
-    const grade = gradeAnswer(r, inputs, hanFuMode);
+    const correct = gradeAnswer(r, answer);
 
     const doraIds = new Set(p.doraIndicators.map((t) => nextDoraId(tileId(t))));
     const isDora = (t: Tile) => doraIds.has(tileId(t));
@@ -85,15 +77,13 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
                 {phase === 'challenge' ? (
                     <ChallengeInputs
                         payment={r.payment}
-                        hanFuMode={hanFuMode}
-                        yakuman={r.yakumanUnits > 0}
-                        inputs={inputs}
-                        setInputs={setInputs}
+                        answer={answer}
+                        setAnswer={setAnswer}
                         onSubmit={submit}
                         onReset={next}
                     />
                 ) : (
-                    <AnswerView result={r} grade={grade} hanFuMode={hanFuMode} onNext={next} />
+                    <AnswerView result={r} correct={correct} onNext={next} />
                 )}
             </section>
         </div>
@@ -102,58 +92,24 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
 
 function ChallengeInputs({
     payment,
-    hanFuMode,
-    yakuman,
-    inputs,
-    setInputs,
+    answer,
+    setAnswer,
     onSubmit,
     onReset,
 }: {
     payment: Payment;
-    hanFuMode: boolean;
-    yakuman: boolean;
-    inputs: Inputs;
-    setInputs: (i: Inputs) => void;
+    answer: string;
+    setAnswer: (v: string) => void;
     onSubmit: () => void;
     onReset: () => void;
 }) {
-    const set = (k: keyof Inputs) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-        setInputs({ ...inputs, [k]: e.target.value });
+    const set = (e: React.ChangeEvent<HTMLInputElement>) => setAnswer(e.target.value);
 
     const filled =
-        payment.kind === 'tsumoNonDealer'
-            ? NON_DEALER_TSUMO_RE.test(inputs.score1.trim())
-            : inputs.score1 !== '';
+        payment.kind === 'tsumoNonDealer' ? NON_DEALER_TSUMO_RE.test(answer.trim()) : answer !== '';
 
     return (
         <div className="inputs">
-            {hanFuMode && !yakuman && (
-                <div className="field-row">
-                    <label className="field">
-                        <span>판</span>
-                        <input
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            value={inputs.han}
-                            onChange={set('han')}
-                            placeholder="판"
-                        />
-                    </label>
-                    <label className="field">
-                        <span>부 (만관 이상은 생략 가능)</span>
-                        <select value={inputs.fu} onChange={set('fu')}>
-                            <option value="">—</option>
-                            {FU_OPTIONS.map((f) => (
-                                <option key={f} value={f}>
-                                    {f}부
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-                </div>
-            )}
-            {hanFuMode && yakuman && <p className="hint">역만 화료는 점수만 채점합니다.</p>}
-
             <div className="field-row">
                 {payment.kind === 'ron' && (
                     <label className="field grow">
@@ -161,8 +117,8 @@ function ChallengeInputs({
                         <input
                             inputMode="numeric"
                             pattern="[0-9]*"
-                            value={inputs.score1}
-                            onChange={set('score1')}
+                            value={answer}
+                            onChange={set}
                             placeholder="예: 7700"
                         />
                     </label>
@@ -173,8 +129,8 @@ function ChallengeInputs({
                         <input
                             inputMode="numeric"
                             pattern="[0-9]*"
-                            value={inputs.score1}
-                            onChange={set('score1')}
+                            value={answer}
+                            onChange={set}
                             placeholder="예: 2600"
                         />
                     </label>
@@ -184,8 +140,8 @@ function ChallengeInputs({
                         <span>자 쯔모 (자·친 지불, 띄어서 입력)</span>
                         <input
                             pattern="[0-9 ]*"
-                            value={inputs.score1}
-                            onChange={set('score1')}
+                            value={answer}
+                            onChange={set}
                             placeholder="예: 1000 2000"
                         />
                     </label>
@@ -204,33 +160,11 @@ function ChallengeInputs({
     );
 }
 
-interface Grade {
-    allCorrect: boolean;
-    scoreOk: boolean;
-    hanOk: boolean | null; // null = 채점 제외
-    fuOk: boolean | null;
-}
-
-function gradeAnswer(r: ScoringResult, inputs: Inputs, hanFuMode: boolean): Grade {
-    let scoreOk = false;
-    if (r.payment.kind === 'ron') scoreOk = Number(inputs.score1) === r.payment.total;
-    else if (r.payment.kind === 'tsumoDealer') scoreOk = Number(inputs.score1) === r.payment.each;
-    else {
-        const [others, dealer] = inputs.score1.trim().split(/\s+/).map(Number);
-        scoreOk = others === r.payment.others && dealer === r.payment.dealer;
-    }
-
-    let hanOk: boolean | null = null;
-    let fuOk: boolean | null = null;
-    if (hanFuMode && r.yakumanUnits === 0) {
-        hanOk = Number(inputs.han) === r.han;
-        // 만관 이상이면 부는 생략 가능 (입력 시에만 채점)
-        if (r.limitName && inputs.fu === '') fuOk = null;
-        else fuOk = Number(inputs.fu) === r.fu;
-    }
-
-    const allCorrect = scoreOk && hanOk !== false && fuOk !== false;
-    return { allCorrect, scoreOk, hanOk, fuOk };
+function gradeAnswer(r: ScoringResult, answer: string): boolean {
+    if (r.payment.kind === 'ron') return Number(answer) === r.payment.total;
+    if (r.payment.kind === 'tsumoDealer') return Number(answer) === r.payment.each;
+    const [others, dealer] = answer.trim().split(/\s+/).map(Number);
+    return others === r.payment.others && dealer === r.payment.dealer;
 }
 
 function paymentText(pm: Payment): string {
@@ -242,13 +176,11 @@ function paymentText(pm: Payment): string {
 
 function AnswerView({
     result: r,
-    grade,
-    hanFuMode,
+    correct,
     onNext,
 }: {
     result: ScoringResult;
-    grade: Grade;
-    hanFuMode: boolean;
+    correct: boolean;
     onNext: () => void;
 }) {
     const headline =
@@ -258,22 +190,12 @@ function AnswerView({
 
     return (
         <div className="answer">
-            <div className={`verdict ${grade.allCorrect ? 'ok' : 'no'}`}>
-                {grade.allCorrect ? '정답!' : '오답'}
-            </div>
+            <div className={`verdict ${correct ? 'ok' : 'no'}`}>{correct ? '정답!' : '오답'}</div>
 
             <div className="plaque">
                 <div className="plaque-main">{headline}</div>
                 <div className="plaque-score">{paymentText(r.payment)}</div>
             </div>
-
-            {hanFuMode && r.yakumanUnits === 0 && (
-                <div className="grade-detail">
-                    <Mark ok={grade.hanOk} label="판" />
-                    <Mark ok={grade.fuOk} label="부" />
-                    <Mark ok={grade.scoreOk} label="점수" />
-                </div>
-            )}
 
             <table className="detail-table">
                 <caption>역</caption>
@@ -319,14 +241,5 @@ function AnswerView({
                 </button>
             </div>
         </div>
-    );
-}
-
-function Mark({ ok, label }: { ok: boolean | null; label: string }) {
-    if (ok === null) return <span className="mark skip">{label} 생략</span>;
-    return (
-        <span className={`mark ${ok ? 'ok' : 'no'}`}>
-            {label} {ok ? '✓' : '✗'}
-        </span>
     );
 }

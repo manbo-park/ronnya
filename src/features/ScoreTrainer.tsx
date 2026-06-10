@@ -20,7 +20,6 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
     const [gp, setGp] = useState<GeneratedProblem>(() => generateProblem());
     const [phase, setPhase] = useState<Phase>('challenge');
     const [inputs, setInputs] = useState<Inputs>(EMPTY);
-    const [streak, setStreak] = useState({ correct: 0, total: 0 });
 
     const next = useCallback(() => {
         setGp(generateProblem());
@@ -35,10 +34,7 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
 
     const grade = gradeAnswer(r, inputs, hanFuMode);
 
-    const submit = () => {
-        setStreak((s) => ({ correct: s.correct + (grade.allCorrect ? 1 : 0), total: s.total + 1 }));
-        setPhase('answer');
-    };
+    const submit = () => setPhase('answer');
 
     return (
         <div className="trainer">
@@ -99,10 +95,6 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
                     <AnswerView result={r} grade={grade} hanFuMode={hanFuMode} onNext={next} />
                 )}
             </section>
-
-            <p className="streak">
-                정답 {streak.correct} / {streak.total}
-            </p>
         </div>
     );
 }

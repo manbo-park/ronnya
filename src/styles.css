@@ -105,7 +105,6 @@ body {
 .badge-win {
     font-weight: 700;
     border: none;
-    margin-left: auto; /* 우측 끝 배치 */
 }
 
 .b-tsumo {

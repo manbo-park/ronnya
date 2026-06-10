@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { generateProblem, type GeneratedProblem } from '../core/generator';
-import { WIND_NAMES } from '../core/tiles';
 import type { Payment, ScoringResult } from '../core/types';
 import { MeldView, TileView } from '../components/Tiles';
 
@@ -45,11 +44,6 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
     <div className="trainer">
       <section className="card">
         <div className="badges">
-          <span className="badge">장풍 {WIND_NAMES[p.roundWind - 1]}</span>
-          <span className="badge">
-            자풍 {WIND_NAMES[p.seatWind - 1]}
-            {dealer ? ' (친)' : ''}
-          </span>
           <span className="badge">0본장</span>
           <span className={`badge badge-win ${tsumo ? 'b-tsumo' : 'b-ron'}`}>
             {tsumo ? '쯔모' : '론'}
@@ -57,6 +51,13 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
           {p.riichi === 2 && <span className="badge b-riichi">더블리치</span>}
           {p.riichi === 1 && <span className="badge b-riichi">리치</span>}
           {p.ippatsu && <span className="badge b-riichi">일발</span>}
+        </div>
+
+        <div className="dora-row">
+          <span className="row-label">장풍</span>
+          <TileView tile={{ suit: 'z', rank: p.roundWind }} />
+          <span className="row-label">자풍{dealer ? ' (친)' : ''}</span>
+          <TileView tile={{ suit: 'z', rank: p.seatWind }} />
         </div>
 
         <div className="dora-row">

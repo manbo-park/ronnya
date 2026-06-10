@@ -154,6 +154,10 @@ body {
   margin-right: 4px;
 }
 
+.dora-row .row-label:not(:first-child) {
+  margin-left: 8px;
+}
+
 /* ---- 패 ---- */
 .tile {
   position: relative;

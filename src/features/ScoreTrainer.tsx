@@ -7,13 +7,13 @@ import { MeldView, TileView } from '../components/Tiles';
 type Phase = 'challenge' | 'answer';
 
 interface Inputs {
-  score1: string; // 론 총액 / 친 쯔모 1명당 / 자 쯔모의 자 지불
-  score2: string; // 자 쯔모의 친 지불
+  score1: string; // 론 총액 / 친 쯔모 1명당 / 자 쯔모는 "자 친" 공백 구분 (예: 1000 2000)
   han: string;
   fu: string;
 }
 
-const EMPTY: Inputs = { score1: '', score2: '', han: '', fu: '' };
+const EMPTY: Inputs = { score1: '', han: '', fu: '' };
+const NON_DEALER_TSUMO_RE = /^\d+\s+\d+$/;
 const FU_OPTIONS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 
 export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
@@ -123,7 +123,9 @@ function ChallengeInputs({
     setInputs({ ...inputs, [k]: e.target.value });
 
   const filled =
-    inputs.score1 !== '' && (payment.kind !== 'tsumoNonDealer' || inputs.score2 !== '');
+    payment.kind === 'tsumoNonDealer'
+      ? NON_DEALER_TSUMO_RE.test(inputs.score1.trim())
+      : inputs.score1 !== '';
 
   return (
     <div className="inputs">
@@ -162,16 +164,10 @@ function ChallengeInputs({
           </label>
         )}
         {payment.kind === 'tsumoNonDealer' && (
-          <>
-            <label className="field grow">
-              <span>자 지불</span>
-              <input inputMode="numeric" pattern="[0-9]*" value={inputs.score1} onChange={set('score1')} placeholder="예: 1000" />
-            </label>
-            <label className="field grow">
-              <span>친 지불</span>
-              <input inputMode="numeric" pattern="[0-9]*" value={inputs.score2} onChange={set('score2')} placeholder="예: 2000" />
-            </label>
-          </>
+          <label className="field grow">
+            <span>자 쯔모 (자·친 지불, 띄어서 입력)</span>
+            <input pattern="[0-9 ]*" value={inputs.score1} onChange={set('score1')} placeholder="예: 1000 2000" />
+          </label>
         )}
       </div>
 
@@ -196,11 +192,12 @@ interface Grade {
 
 function gradeAnswer(r: ScoringResult, inputs: Inputs, hanFuMode: boolean): Grade {
   let scoreOk = false;
-  const n1 = Number(inputs.score1);
-  const n2 = Number(inputs.score2);
-  if (r.payment.kind === 'ron') scoreOk = n1 === r.payment.total;
-  else if (r.payment.kind === 'tsumoDealer') scoreOk = n1 === r.payment.each;
-  else scoreOk = n1 === r.payment.others && n2 === r.payment.dealer;
+  if (r.payment.kind === 'ron') scoreOk = Number(inputs.score1) === r.payment.total;
+  else if (r.payment.kind === 'tsumoDealer') scoreOk = Number(inputs.score1) === r.payment.each;
+  else {
+    const [others, dealer] = inputs.score1.trim().split(/\s+/).map(Number);
+    scoreOk = others === r.payment.others && dealer === r.payment.dealer;
+  }
 
   let hanOk: boolean | null = null;
   let fuOk: boolean | null = null;

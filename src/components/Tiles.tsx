@@ -1,7 +1,24 @@
 import type { Meld, Tile } from '../core/types';
+import { tileLabel } from '../core/tiles';
 
-const HONOR_CHARS = ['東', '南', '西', '北', '白', '發', '中'];
-const SUIT_CHARS: Record<string, string> = { m: '萬', p: '筒', s: '索' };
+/** 파일명(확장자 제외) → 번들된 SVG URL */
+const TILE_URLS: Record<string, string> = Object.fromEntries(
+    Object.entries(
+        import.meta.glob<string>('../assets/tiles/*.svg', {
+            eager: true,
+            query: '?url',
+            import: 'default',
+        }),
+    ).map(([path, url]) => [path.replace(/^.*\/|\.svg$/g, ''), url]),
+);
+
+const HONOR_FILES = ['Ton', 'Nan', 'Shaa', 'Pei', 'Haku', 'Hatsu', 'Chun'];
+const SUIT_FILES: Record<string, string> = { m: 'Man', p: 'Pin', s: 'Sou' };
+
+function faceUrl(t: Tile): string {
+    const name = t.suit === 'z' ? HONOR_FILES[t.rank - 1] : `${SUIT_FILES[t.suit]}${t.rank}`;
+    return TILE_URLS[t.red ? `${name}-Dora` : name];
+}
 
 export function TileView({
     tile,
@@ -12,28 +29,17 @@ export function TileView({
     win?: boolean;
     back?: boolean;
 }) {
-    if (back || !tile) return <div className="tile tile-back" aria-hidden="true" />;
-    if (tile.suit === 'z') {
-        const ch = HONOR_CHARS[tile.rank - 1];
-        const cls =
-            tile.rank === 6
-                ? 'h-green'
-                : tile.rank === 7
-                  ? 'h-red'
-                  : tile.rank === 5
-                    ? 'h-white'
-                    : 'h-ink';
+    if (back || !tile) {
         return (
-            <div className={`tile ${win ? 'tile-win' : ''}`}>
-                <span className={`honor ${cls}`}>{ch}</span>
+            <div className="tile" aria-hidden="true">
+                <img className="tile-img" src={TILE_URLS.Back} alt="" />
             </div>
         );
     }
     return (
         <div className={`tile ${win ? 'tile-win' : ''}`}>
-            <span className={`num suit-${tile.suit} ${tile.red ? 'red5' : ''}`}>{tile.rank}</span>
-            <span className={`suit suit-${tile.suit}`}>{SUIT_CHARS[tile.suit]}</span>
-            {tile.red && <span className="red-dot" aria-label="적도라" />}
+            <img className="tile-img" src={TILE_URLS.Front} alt="" />
+            <img className="tile-img" src={faceUrl(tile)} alt={tileLabel(tile)} />
         </div>
     );
 }

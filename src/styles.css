@@ -5,17 +5,12 @@
     --panel: #10412f;
     --panel-edge: rgba(216, 180, 90, 0.28);
     --ivory: #f7f1e1;
-    --ivory-shade: #e3dac2;
-    --ink: #2a2620;
     --brass: #d8b45a;
     --brass-dim: #9a8245;
     --text: #ede7d2;
     --muted: #9db5a6;
     --vermilion: #e2543a;
     --jade: #5fc28f;
-    --suit-m: #b03030;
-    --suit-p: #2e5fb0;
-    --suit-s: #1f8a4c;
     --tile-w: clamp(22px, 6.6vw, 38px);
 }
 
@@ -167,99 +162,28 @@ body {
 .tile {
     position: relative;
     width: var(--tile-w);
-    aspect-ratio: 3 / 4.2;
-    background: linear-gradient(170deg, #fffaf0 0%, var(--ivory) 55%, var(--ivory-shade) 100%);
-    border-radius: 4px;
-    border: 1px solid #c9bfa3;
-    box-shadow:
-        0 2px 0 #b9ad8d,
-        0 3px 5px rgba(0, 0, 0, 0.35);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    aspect-ratio: 3 / 4;
+    border-radius: calc(var(--tile-w) * 0.12);
     flex-shrink: 0;
     user-select: none;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
 }
 
-.tile-back {
-    background: linear-gradient(170deg, #2f6e54, #1d4a37);
-    border-color: #143527;
-    box-shadow:
-        0 2px 0 #0e2a1e,
-        0 3px 5px rgba(0, 0, 0, 0.35);
+.tile-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
 }
 
 .tile-win {
     outline: 2px solid var(--brass);
     outline-offset: 1px;
-    box-shadow:
-        0 2px 0 #b9ad8d,
-        0 0 12px rgba(216, 180, 90, 0.55);
-}
-
-.num {
-    font-size: calc(var(--tile-w) * 0.52);
-    font-weight: 800;
-    line-height: 1;
-}
-
-.suit {
-    font-size: calc(var(--tile-w) * 0.34);
-    line-height: 1.1;
-    font-weight: 600;
-}
-
-.suit-m {
-    color: var(--suit-m);
-}
-
-.suit-p {
-    color: var(--suit-p);
-}
-
-.suit-s {
-    color: var(--suit-s);
-}
-
-.honor {
-    font-size: calc(var(--tile-w) * 0.6);
-    font-weight: 800;
-    line-height: 1;
-}
-
-.h-ink {
-    color: var(--ink);
-}
-
-.h-green {
-    color: var(--suit-s);
-}
-
-.h-red {
-    color: var(--vermilion);
-}
-
-.h-white {
-    color: #8d8468;
-    border: 1.5px solid #8d8468;
-    border-radius: 3px;
-    padding: 1px 3px;
-    font-size: calc(var(--tile-w) * 0.42);
-}
-
-.red5 {
-    color: var(--vermilion);
-}
-
-.red-dot {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--vermilion);
+    filter:
+        drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35))
+        drop-shadow(0 0 8px rgba(216, 180, 90, 0.55));
 }
 
 /* ---- 손패 영역 ---- */

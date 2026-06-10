@@ -22,6 +22,11 @@
 
 자세한 설계는 [docs/score-trainer-plan.md](docs/score-trainer-plan.md) 참고.
 
+## 패 이미지
+
+패 이미지는 [FluffyStuff/riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles)의
+SVG(퍼블릭 도메인, CC0)를 사용합니다. (`src/assets/tiles/`)
+
 ## 개발
 
 ```bash

@@ -48,14 +48,6 @@ export function TileView({
     );
 }
 
-const MELD_LABEL: Record<Meld['type'], string> = {
-    chi: '치',
-    pon: '퐁',
-    minkan: '밍깡',
-    kakan: '가깡',
-    ankan: '안깡',
-};
-
 type DoraPredicate = (t: Tile) => boolean;
 
 /** 눕힌(가로) 패. 받은 패임을 나타낸다. */
@@ -68,12 +60,7 @@ function LaidTile({ tile, dora = false }: { tile: Tile; dora?: boolean }) {
 }
 
 export function MeldView({ meld, isDora }: { meld: Meld; isDora?: DoraPredicate }) {
-    return (
-        <div className="meld">
-            <span className="meld-label">{MELD_LABEL[meld.type]}</span>
-            <div className="meld-tiles">{meldTiles(meld, isDora ?? (() => false))}</div>
-        </div>
-    );
+    return <div className="meld-tiles">{meldTiles(meld, isDora ?? (() => false))}</div>;
 }
 
 function meldTiles(meld: Meld, isDora: DoraPredicate) {

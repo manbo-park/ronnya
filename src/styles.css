@@ -258,18 +258,6 @@ body {
     margin-left: 10px;
 }
 
-.meld {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.meld-label {
-    font-size: 10px;
-    color: var(--muted);
-    text-align: center;
-}
-
 .meld-tiles {
     display: flex;
     align-items: flex-end;

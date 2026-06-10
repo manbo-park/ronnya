@@ -40,9 +40,7 @@ export default function App() {
 
             <ScoreTrainer hanFuMode={hanFuMode} />
 
-            <footer className="app-footer">
-                작혼 룰 기준 · 0본장 고정 · 뒷도라 미적용 (연습 목적의 의도적 차이)
-            </footer>
+            <footer className="app-footer">작혼 룰 기준 · 0본장 고정 · 뒷도라 미적용</footer>
         </div>
     );
 }

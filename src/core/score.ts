@@ -83,7 +83,7 @@ export function scoreHand(p: Problem): ScoringResult {
         const id = tileId(m.tiles[0]);
         if (m.type === 'pon')
             return { kind: 'set', tile: id, open: true, quad: false, concealed: false };
-        if (m.type === 'minkan')
+        if (m.type === 'minkan' || m.type === 'kakan')
             return { kind: 'set', tile: id, open: true, quad: true, concealed: false };
         return { kind: 'set', tile: id, open: false, quad: true, concealed: true }; // ankan
     });

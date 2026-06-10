@@ -48,25 +48,64 @@ const MELD_LABEL: Record<Meld['type'], string> = {
     chi: '치',
     pon: '퐁',
     minkan: '밍깡',
+    kakan: '가깡',
     ankan: '안깡',
 };
+
+/** 눕힌(가로) 패. 받은 패임을 나타낸다. */
+function LaidTile({ tile }: { tile: Tile }) {
+    return (
+        <div className="tile-laid">
+            <TileView tile={tile} />
+        </div>
+    );
+}
 
 export function MeldView({ meld }: { meld: Meld }) {
     return (
         <div className="meld">
             <span className="meld-label">{MELD_LABEL[meld.type]}</span>
-            <div className="meld-tiles">
-                {meld.type === 'ankan' ? (
-                    <>
-                        <TileView back />
-                        <TileView tile={meld.tiles[1]} />
-                        <TileView tile={meld.tiles[2]} />
-                        <TileView back />
-                    </>
-                ) : (
-                    meld.tiles.map((t, i) => <TileView key={i} tile={t} />)
-                )}
-            </div>
+            <div className="meld-tiles">{meldTiles(meld)}</div>
         </div>
     );
+}
+
+function meldTiles(meld: Meld) {
+    if (meld.type === 'ankan') {
+        return (
+            <>
+                <TileView back />
+                <TileView tile={meld.tiles[1]} />
+                <TileView tile={meld.tiles[2]} />
+                <TileView back />
+            </>
+        );
+    }
+
+    // 치: 받은 패를 눕혀 맨 왼쪽(상가)에, 나머지를 이어서 표시
+    if (meld.type === 'chi') {
+        const called = meld.calledIndex ?? 0;
+        const rest = meld.tiles.filter((_, i) => i !== called);
+        return (
+            <>
+                <LaidTile tile={meld.tiles[called]} />
+                <TileView tile={rest[0]} />
+                <TileView tile={rest[1]} />
+            </>
+        );
+    }
+
+    // 퐁/밍깡/가깡: 출처 위치의 패를 눕힘 (가깡은 그 위에 한 장 더 쌓음)
+    const columns = meld.type === 'kakan' ? meld.tiles.slice(0, 3) : meld.tiles;
+    const laidCol = meld.from === 'across' ? 1 : meld.from === 'right' ? columns.length - 1 : 0;
+    return columns.map((t, i) => {
+        if (i !== laidCol) return <TileView key={i} tile={t} />;
+        if (meld.type !== 'kakan') return <LaidTile key={i} tile={t} />;
+        return (
+            <div key={i} className="laid-stack">
+                <LaidTile tile={meld.tiles[3]} />
+                <LaidTile tile={t} />
+            </div>
+        );
+    });
 }

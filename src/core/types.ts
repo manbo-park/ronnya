@@ -10,11 +10,18 @@ export interface Tile {
     red?: boolean;
 }
 
-export type MeldType = 'chi' | 'pon' | 'minkan' | 'ankan';
+export type MeldType = 'chi' | 'pon' | 'minkan' | 'kakan' | 'ankan';
+
+/** 후로 출처: 상가(왼쪽) / 대면 / 하가(오른쪽) */
+export type MeldFrom = 'left' | 'across' | 'right';
 
 export interface Meld {
     type: MeldType;
     tiles: Tile[];
+    /** 후로 출처 (안깡은 없음, 치는 항상 left) */
+    from?: MeldFrom;
+    /** 치에서 받은 패의 tiles 인덱스 (눕혀서 표시할 패) */
+    calledIndex?: number;
 }
 
 export type WinType = 'tsumo' | 'ron';

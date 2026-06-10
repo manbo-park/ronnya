@@ -45,7 +45,9 @@ describe('문제 생성기 합법성 (계획 5.2)', () => {
             expect(p.hand.length).toBe(13 - 3 * p.melds.length);
 
             // 표시패 수 = 1 + 깡 수
-            const kans = p.melds.filter((m) => m.type === 'ankan' || m.type === 'minkan').length;
+            const kans = p.melds.filter(
+                (m) => m.type === 'ankan' || m.type === 'minkan' || m.type === 'kakan',
+            ).length;
             expect(p.doraIndicators.length).toBe(1 + kans);
             expect(p.doraIndicators.every((t) => !t.red)).toBe(true);
 

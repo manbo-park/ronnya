@@ -1,4 +1,4 @@
-import type { Meld, Problem, ScoringResult, Tile } from './types';
+import type { Meld, MeldFrom, Problem, ScoringResult, Tile } from './types';
 import { idToTile, sortTiles, tileId } from './tiles';
 import { KOKUSHI_IDS } from './decompose';
 import { scoreHand } from './score';
@@ -35,7 +35,7 @@ interface Group {
     kind: 'pair' | 'run' | 'set';
     tile: number;
     open: boolean;
-    kan: 'none' | 'ankan' | 'minkan';
+    kan: 'none' | 'ankan' | 'minkan' | 'kakan';
 }
 
 function buildStandard(rng: Rng): Problem | null {
@@ -87,7 +87,8 @@ function buildStandard(rng: Rng): Problem | null {
     for (const g of groups) {
         if (g.kind !== 'set') continue;
         if (rng() < 0.07 && take(g.tile, 1)) {
-            g.kan = g.open ? 'minkan' : 'ankan';
+            if (!g.open) g.kan = 'ankan';
+            else g.kan = rng() < 0.5 ? 'minkan' : 'kakan';
         }
     }
 
@@ -111,6 +112,8 @@ function buildStandard(rng: Rng): Problem | null {
     const winIdx = concealedTiles.findIndex((t) => tileId(t) === winId);
     const winningTile = concealedTiles.splice(winIdx, 1)[0];
 
+    const randomFrom = (): MeldFrom =>
+        (['left', 'across', 'right'] as const)[Math.floor(rng() * 3)];
     const melds: Meld[] = groups
         .filter((g) => g.open || g.kan !== 'none')
         .map((g) => {
@@ -118,13 +121,23 @@ function buildStandard(rng: Rng): Problem | null {
                 return {
                     type: 'chi' as const,
                     tiles: [idToTile(g.tile), idToTile(g.tile + 1), idToTile(g.tile + 2)],
+                    from: 'left' as const, // 치는 상가에서만 가능
+                    calledIndex: Math.floor(rng() * 3),
                 };
             }
             if (g.kan === 'ankan')
                 return { type: 'ankan' as const, tiles: [0, 1, 2, 3].map(() => idToTile(g.tile)) };
-            if (g.kan === 'minkan')
-                return { type: 'minkan' as const, tiles: [0, 1, 2, 3].map(() => idToTile(g.tile)) };
-            return { type: 'pon' as const, tiles: [0, 1, 2].map(() => idToTile(g.tile)) };
+            if (g.kan === 'minkan' || g.kan === 'kakan')
+                return {
+                    type: g.kan,
+                    tiles: [0, 1, 2, 3].map(() => idToTile(g.tile)),
+                    from: randomFrom(),
+                };
+            return {
+                type: 'pon' as const,
+                tiles: [0, 1, 2].map(() => idToTile(g.tile)),
+                from: randomFrom(),
+            };
         });
 
     const kanCount = groups.filter((g) => g.kan !== 'none').length;

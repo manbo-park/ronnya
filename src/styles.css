@@ -181,9 +181,7 @@ body {
 .tile-win {
     outline: 2px solid var(--brass);
     outline-offset: 1px;
-    filter:
-        drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35))
-        drop-shadow(0 0 8px rgba(216, 180, 90, 0.55));
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 8px rgba(216, 180, 90, 0.55));
 }
 
 /* ---- 손패 영역 ---- */
@@ -224,6 +222,29 @@ body {
 
 .meld-tiles {
     display: flex;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+/* 눕힌 패: 세로 패를 90° 돌려 가로 박스에 담는다 */
+.tile-laid {
+    position: relative;
+    width: calc(var(--tile-w) * 4 / 3);
+    aspect-ratio: 4 / 3;
+    flex-shrink: 0;
+}
+
+.tile-laid .tile {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* 가깡: 눕힌 패 두 장을 세로로 쌓는다 */
+.laid-stack {
+    display: flex;
+    flex-direction: column;
     gap: 2px;
 }
 

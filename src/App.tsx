@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import { Home } from './features/Home';
 import { ScoreTrainer } from './features/ScoreTrainer';
 
@@ -17,6 +17,9 @@ function ScorePage() {
     return (
         <>
             <header className="app-header">
+                <Link to="/" className="home-link">
+                    ← 홈
+                </Link>
                 <h1>점수 계산 연습</h1>
             </header>
 

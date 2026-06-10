@@ -47,8 +47,29 @@ body {
 
 /* ---- 헤더 ---- */
 .app-header {
+    position: relative;
     text-align: center;
     margin-bottom: 14px;
+}
+
+/* 세부 메뉴 → 홈 이동 버튼 */
+.home-link {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 5px 9px;
+    border: 1px solid rgba(237, 231, 210, 0.25);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.home-link:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 1px;
 }
 
 .eyebrow {

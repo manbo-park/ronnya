@@ -17,8 +17,7 @@ function ScorePage() {
     return (
         <>
             <header className="app-header">
-                <p className="eyebrow">RIICHI DRILL</p>
-                <h1>리치드릴 · 점수 계산 연습</h1>
+                <h1>점수 계산 연습</h1>
             </header>
 
             <ScoreTrainer />

@@ -260,6 +260,11 @@ body {
     gap: 2px;
 }
 
+/* 멘젠: 손패 13장 + 오름패가 한 줄에 들어가도록 패 폭 축소 */
+.hand-menzen {
+    --tile-w: clamp(15px, 5.2vw, 27px);
+}
+
 .meld-tiles {
     display: flex;
     align-items: flex-end;

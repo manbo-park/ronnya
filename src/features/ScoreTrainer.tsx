@@ -65,7 +65,11 @@ export function ScoreTrainer() {
                     )}
                 </div>
 
-                <div className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'}`}>
+                <div
+                    className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'} ${
+                        p.melds.length === 0 ? 'hand-menzen' : ''
+                    }`}
+                >
                     <div className="hand-tiles">
                         {p.hand.map((t, i) => (
                             <TileView key={i} tile={t} dora={isDora(t)} />

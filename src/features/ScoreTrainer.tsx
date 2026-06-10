@@ -44,7 +44,6 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
     <div className="trainer">
       <section className="card">
         <div className="badges">
-          <span className="badge">0본장</span>
           <span className={`badge badge-win ${tsumo ? 'b-tsumo' : 'b-ron'}`}>
             {tsumo ? '쯔모' : '론'}
           </span>

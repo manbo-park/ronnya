@@ -35,12 +35,12 @@ export function ScoreTrainer() {
         <div className="trainer">
             <section className="card">
                 <div className="badges">
-                    <span className={`badge badge-win ${tsumo ? 'b-tsumo' : 'b-ron'}`}>
-                        {tsumo ? '쯔모' : '론'}
-                    </span>
                     {p.riichi === 2 && <span className="badge b-riichi">더블리치</span>}
                     {p.riichi === 1 && <span className="badge b-riichi">리치</span>}
                     {p.ippatsu && <span className="badge b-riichi">일발</span>}
+                    <span className={`badge badge-win ${tsumo ? 'b-tsumo' : 'b-ron'}`}>
+                        {tsumo ? '쯔모' : '론'}
+                    </span>
                 </div>
 
                 <div className="dora-row">

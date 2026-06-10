@@ -67,7 +67,7 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
                 </div>
 
                 <div className="hand-area">
-                    <div className="hand-tiles">
+                    <div className={`hand-tiles ${tsumo ? 'win-tsumo' : 'win-ron'}`}>
                         {p.hand.map((t, i) => (
                             <TileView key={i} tile={t} />
                         ))}

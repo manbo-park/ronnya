@@ -191,6 +191,17 @@ body {
     filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 8px rgba(216, 180, 90, 0.55));
 }
 
+/* 오름패 강조: 론은 빨강, 쯔모는 녹색 (상단 배지와 동일 색) */
+.win-ron .tile-win {
+    outline-color: var(--vermilion);
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 8px rgba(226, 84, 58, 0.6));
+}
+
+.win-tsumo .tile-win {
+    outline-color: var(--jade);
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 8px rgba(95, 194, 143, 0.6));
+}
+
 /* ---- 손패 영역 ---- */
 .hand-area {
     display: flex;

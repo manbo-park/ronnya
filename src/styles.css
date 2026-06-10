@@ -179,6 +179,12 @@ body {
     pointer-events: none;
 }
 
+/* 패 무늬: 실물처럼 앞면 가장자리에 여백을 둔다 */
+.tile-face {
+    padding: 11% 10% 15%;
+    object-fit: contain;
+}
+
 .tile-win {
     outline: 2px solid var(--brass);
     outline-offset: 1px;

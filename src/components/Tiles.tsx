@@ -39,7 +39,7 @@ export function TileView({
     return (
         <div className={`tile ${win ? 'tile-win' : ''}`}>
             <img className="tile-img" src={TILE_URLS.Front} alt="" />
-            <img className="tile-img" src={faceUrl(tile)} alt={tileLabel(tile)} />
+            <img className="tile-img tile-face" src={faceUrl(tile)} alt={tileLabel(tile)} />
         </div>
     );
 }

@@ -13,6 +13,7 @@ interface Inputs {
 }
 
 const EMPTY: Inputs = { score1: '', han: '', fu: '' };
+const DORA_INDICATOR_SLOTS = 5; // 왕패의 도라표시패 자리 수
 const NON_DEALER_TSUMO_RE = /^\d+\s+\d+$/;
 const FU_OPTIONS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 
@@ -60,9 +61,13 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
 
         <div className="dora-row">
           <span className="row-label">도라표시</span>
-          {p.doraIndicators.map((t, i) => (
-            <TileView key={i} tile={t} />
-          ))}
+          {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
+            i < p.doraIndicators.length ? (
+              <TileView key={i} tile={p.doraIndicators[i]} />
+            ) : (
+              <TileView key={i} back />
+            ),
+          )}
         </div>
 
         <div className="hand-area">

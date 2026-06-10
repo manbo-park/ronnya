@@ -151,8 +151,14 @@ body {
 }
 
 .row-label {
-    font-size: 11px;
-    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--brass);
+    background: rgba(216, 180, 90, 0.08);
+    border: 1px solid rgba(216, 180, 90, 0.3);
+    border-radius: 6px;
+    padding: 3px 7px 3px 9px; /* letter-spacing이 만드는 우측 잉여 보정 */
     margin-right: 4px;
 }
 

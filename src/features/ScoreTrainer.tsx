@@ -52,6 +52,9 @@ export function ScoreTrainer() {
                     <TileView tile={{ suit: 'z', rank: p.roundWind }} />
                     <span className="row-label">자풍</span>
                     <TileView tile={{ suit: 'z', rank: p.seatWind }} />
+                </div>
+
+                <div className="dora-row">
                     <span className="row-label">도라표시</span>
                     {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
                         i < p.doraIndicators.length ? (

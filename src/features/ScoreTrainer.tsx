@@ -55,7 +55,7 @@ export function ScoreTrainer() {
                 </div>
 
                 <div className="dora-row">
-                    <span className="row-label">도라표시</span>
+                    <span className="row-label">왕패</span>
                     {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
                         i < p.doraIndicators.length ? (
                             <TileView key={i} tile={p.doraIndicators[i]} />

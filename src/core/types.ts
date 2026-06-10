@@ -40,7 +40,7 @@ export interface Problem {
     /** 0=없음 1=리치 2=더블리치 */
     riichi: 0 | 1 | 2;
     ippatsu: boolean;
-    /** 도라표시패 (1 + 깡 수). 뒷도라는 미적용. */
+    /** 왕패 (1 + 깡 수). 뒷도라는 미적용. */
     doraIndicators: Tile[];
 }
 

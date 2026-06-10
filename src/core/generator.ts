@@ -222,7 +222,7 @@ function finishProblem(
         if (opts.kanCount === 0 && rng() < 0.25) ippatsu = true;
     }
 
-    // 도라표시패 (1 + 깡 수, 적도라 아님)
+    // 왕패 (1 + 깡 수, 적도라 아님)
     const doraIndicators: Tile[] = [];
     for (let i = 0; i < 1 + opts.kanCount; i++) {
         const candidates: number[] = [];

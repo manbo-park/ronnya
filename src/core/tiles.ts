@@ -33,7 +33,7 @@ export function sortTiles(tiles: Tile[]): Tile[] {
     return [...tiles].sort((a, b) => tileId(a) - tileId(b));
 }
 
-/** 도라표시패 → 도라 (작혼/일반 룰: 9→1, 북→동, 중→백) */
+/** 왕패 → 도라 (작혼/일반 룰: 9→1, 북→동, 중→백) */
 export function nextDoraId(indicatorId: number): number {
     if (indicatorId < 27) {
         const suitBase = Math.floor(indicatorId / 9) * 9;

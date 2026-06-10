@@ -23,7 +23,6 @@ export function ScoreTrainer() {
     const p = gp.problem;
     const r = gp.result;
     const tsumo = p.winType === 'tsumo';
-    const dealer = p.seatWind === 1;
 
     const correct = gradeAnswer(r, answer);
 
@@ -47,7 +46,7 @@ export function ScoreTrainer() {
                 <div className="dora-row">
                     <span className="row-label">장풍</span>
                     <TileView tile={{ suit: 'z', rank: p.roundWind }} />
-                    <span className="row-label">자풍{dealer ? ' (친)' : ''}</span>
+                    <span className="row-label">자풍</span>
                     <TileView tile={{ suit: 'z', rank: p.seatWind }} />
                 </div>
 

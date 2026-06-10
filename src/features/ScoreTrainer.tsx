@@ -250,8 +250,7 @@ function AnswerView({
     const headline =
         r.yakumanUnits > 0
             ? r.limitName
-            : `${r.han}판 ${r.fu}부` +
-              (r.limitName ? ` · ${r.limitName}${r.kiriage ? ' (키리아게)' : ''}` : '');
+            : `${r.han}판 ${r.fu}부` + (r.limitName ? ` · ${r.limitName}` : '');
 
     return (
         <div className="answer">

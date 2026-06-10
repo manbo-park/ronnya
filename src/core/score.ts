@@ -150,7 +150,6 @@ export function scoreHand(p: Problem): ScoringResult {
         fuDetails: best.ev.yakumanUnits > 0 ? [] : best.ev.fuDetails,
         yakumanUnits: best.ev.yakumanUnits,
         limitName: best.pts.limitName,
-        kiriage: best.pts.kiriage,
         basePoints: best.pts.basePoints,
         payment: best.pts.payment,
         totalReceived: best.pts.totalReceived,

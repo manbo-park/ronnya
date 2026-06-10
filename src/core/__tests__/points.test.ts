@@ -17,17 +17,16 @@ describe('점수 테이블', () => {
         expect(r.payment).toEqual({ kind: 'ron', total: 5800 });
     });
 
-    it('키리아게 만관: 자 론 4판 30부 = 8000점', () => {
+    it('키리아게 미적용: 자 론 4판 30부 = 7700점', () => {
         const r = computePoints(4, 30, 0, false, false);
-        expect(r.kiriage).toBe(true);
-        expect(r.limitName).toBe('만관');
-        expect(r.payment).toEqual({ kind: 'ron', total: 8000 });
+        expect(r.limitName).toBeUndefined();
+        expect(r.payment).toEqual({ kind: 'ron', total: 7700 });
     });
 
-    it('키리아게 만관: 친 쯔모 3판 60부 = 4000올', () => {
+    it('키리아게 미적용: 친 쯔모 3판 60부 = 3900올', () => {
         const r = computePoints(3, 60, 0, true, true);
-        expect(r.kiriage).toBe(true);
-        expect(r.payment).toEqual({ kind: 'tsumoDealer', each: 4000 });
+        expect(r.limitName).toBeUndefined();
+        expect(r.payment).toEqual({ kind: 'tsumoDealer', each: 3900 });
     });
 
     it('자 쯔모 3판 30부 = 1000/2000', () => {
@@ -40,9 +39,8 @@ describe('점수 테이블', () => {
         expect(r.payment).toEqual({ kind: 'tsumoDealer', each: 500 });
     });
 
-    it('자연 만관: 4판 40부 자 론 = 8000점 (키리아게 아님)', () => {
+    it('자연 만관: 4판 40부 자 론 = 8000점', () => {
         const r = computePoints(4, 40, 0, false, false);
-        expect(r.kiriage).toBe(false);
         expect(r.limitName).toBe('만관');
         expect(r.payment).toEqual({ kind: 'ron', total: 8000 });
     });

@@ -74,8 +74,6 @@ export interface ScoringResult {
     yakumanUnits: number;
     /** 만관/하네만/배만/삼배만/헤아림역만/역만/2배역만... */
     limitName?: string;
-    /** 키리아게 만관 적용 여부 */
-    kiriage: boolean;
     basePoints: number;
     payment: Payment;
     /** 화료자가 받는 총점 */

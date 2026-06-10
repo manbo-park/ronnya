@@ -3,7 +3,6 @@ import type { Payment } from './types';
 export interface PointsResult {
     basePoints: number;
     limitName?: string;
-    kiriage: boolean;
     payment: Payment;
     totalReceived: number;
 }
@@ -16,7 +15,7 @@ function roundUp100(n: number): number {
 
 /**
  * 기본점과 지불 분배 계산.
- * 작혼 기준: 키리아게 만관(4판30부, 3판60부 → 만관) 적용, 역만 복합 합산.
+ * 키리아게 만관 미적용, 역만 복합 합산.
  */
 export function computePoints(
     han: number,
@@ -27,7 +26,6 @@ export function computePoints(
 ): PointsResult {
     let base: number;
     let limitName: string | undefined;
-    let kiriage = false;
 
     if (yakumanUnits > 0) {
         base = 8000 * yakumanUnits;
@@ -49,11 +47,7 @@ export function computePoints(
         limitName = '만관';
     } else {
         base = fu * Math.pow(2, 2 + han);
-        if ((han === 4 && fu === 30) || (han === 3 && fu === 60)) {
-            base = 2000;
-            limitName = '만관';
-            kiriage = true;
-        } else if (base >= 2000) {
+        if (base >= 2000) {
             base = 2000;
             limitName = '만관';
         }
@@ -78,5 +72,5 @@ export function computePoints(
         totalReceived = total;
     }
 
-    return { basePoints: base, limitName, kiriage, payment, totalReceived };
+    return { basePoints: base, limitName, payment, totalReceived };
 }

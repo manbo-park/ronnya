@@ -71,14 +71,11 @@ export function ScoreTrainer({ hanFuMode }: { hanFuMode: boolean }) {
                         {p.hand.map((t, i) => (
                             <TileView key={i} tile={t} />
                         ))}
+                        <TileView tile={p.winningTile} win />
                     </div>
                     {p.melds.map((m, i) => (
                         <MeldView key={i} meld={m} />
                     ))}
-                    <div className="win-tile">
-                        <span className="meld-label">{tsumo ? '쯔모' : '론'}</span>
-                        <TileView tile={p.winningTile} win />
-                    </div>
                 </div>
 
                 {phase === 'challenge' ? (

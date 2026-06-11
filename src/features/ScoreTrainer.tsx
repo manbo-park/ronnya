@@ -169,6 +169,29 @@ function ChallengeInputs({
 }) {
     const set = (e: React.ChangeEvent<HTMLInputElement>) => setAnswer(e.target.value);
 
+    // 자 쯔모: 한 필드에 공백 구분으로 받으면 숫자 키패드(inputMode=numeric)에
+    // 공백 키가 없어 일반 키보드가 떠야 하므로, 자·친 지불을 별도 필드로 받는다 (#17)
+    // answer에는 기존 채점 형식("자 친")을 그대로 유지한다.
+    const [others = '', dealerPay = ''] = answer.split(' ');
+    const setPair = (o: string, d: string) => setAnswer(o === '' && d === '' ? '' : `${o} ${d}`);
+
+    const othersRef = useRef<HTMLInputElement>(null);
+    const dealerPayRef = useRef<HTMLInputElement>(null);
+
+    // 자 지불은 대부분 4자리 이하라, 4자리가 되는 순간 친 지불로 포커스를 넘겨
+    // 두 번째 필드 터치를 생략한다. 5자리(더블 역만 16000)는 매우 드물어
+    // 자동 이동 후 첫 필드를 다시 터치해 이어 입력한다 — 4자리가 "되는" 순간에만
+    // 이동하므로 0을 덧붙여 5자리를 만들거나 5자리에서 지울 때는 재이동하지 않는다.
+    const setOthers = (v: string) => {
+        setPair(v, dealerPay);
+        if (v.length === 4 && others.length < 4) dealerPayRef.current?.focus();
+    };
+
+    // 자동 이동 직후 수정: 빈 친 지불 필드에서 백스페이스 시 자 지불로 복귀
+    const onDealerPayKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Backspace' && dealerPay === '') othersRef.current?.focus();
+    };
+
     const filled =
         payment.kind === 'tsumoNonDealer' ? NON_DEALER_TSUMO_RE.test(answer.trim()) : answer !== '';
 
@@ -200,15 +223,31 @@ function ChallengeInputs({
                     </label>
                 )}
                 {payment.kind === 'tsumoNonDealer' && (
-                    <label className="field grow">
-                        <span>자 쯔모 (자·친 지불, 띄어서 입력)</span>
-                        <input
-                            pattern="[0-9 ]*"
-                            value={answer}
-                            onChange={set}
-                            placeholder="예: 1000 2000"
-                        />
-                    </label>
+                    <>
+                        <label className="field grow">
+                            <span>자 쯔모 (자 지불)</span>
+                            <input
+                                ref={othersRef}
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={others}
+                                onChange={(e) => setOthers(e.target.value)}
+                                placeholder="예: 1000"
+                            />
+                        </label>
+                        <label className="field grow">
+                            <span>자 쯔모 (친 지불)</span>
+                            <input
+                                ref={dealerPayRef}
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={dealerPay}
+                                onChange={(e) => setPair(others, e.target.value)}
+                                onKeyDown={onDealerPayKeyDown}
+                                placeholder="예: 2000"
+                            />
+                        </label>
+                    </>
                 )}
             </div>
 

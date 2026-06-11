@@ -620,7 +620,13 @@ body {
     outline-offset: 1px;
 }
 
-/* 가로 스크롤 없이 11개 부수 열이 한 화면에 들어가도록 고정 레이아웃 */
+/* 기본(20~60부)은 가로 스크롤 없이 한 화면에 들어가도록 고정 레이아웃 */
+.st-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+}
+
 .st-table {
     width: 100%;
     table-layout: fixed;
@@ -631,9 +637,9 @@ body {
 .st-table th,
 .st-table td {
     border: 1px solid rgba(237, 231, 210, 0.14);
-    padding: 6px 1px;
+    padding: 5px 2px;
     text-align: center;
-    font-size: clamp(9px, 2.6vw, 12px);
+    font-size: clamp(10px, 2.7vw, 13px);
     white-space: nowrap;
     overflow: hidden;
 }
@@ -653,12 +659,87 @@ body {
     font-weight: 700;
 }
 
+/* 각 칸: 윗줄 론 / 아랫줄 쯔모 */
+.st-ron,
+.st-tsumo {
+    display: block;
+    line-height: 1.4;
+}
+
+.st-ron {
+    color: #f3a8c8;
+}
+
+.st-tsumo {
+    color: var(--jade);
+    font-size: 0.9em;
+}
+
 /* 만관 이상·계단형 병합 칸: 명칭만 표시 */
 .st-limit {
     color: var(--brass);
     background: rgba(216, 180, 90, 0.1);
     font-weight: 700;
     letter-spacing: 0.04em;
+}
+
+/* 70부 이상 확장 시: 내용 폭만큼 늘려 가로 스크롤 허용 */
+.st-table.expanded {
+    table-layout: auto;
+    width: auto;
+    min-width: 100%;
+}
+
+.st-table.expanded th,
+.st-table.expanded td {
+    min-width: 58px;
+    padding: 5px 6px;
+}
+
+.st-table.expanded .st-corner,
+.st-table.expanded .st-han {
+    width: auto;
+    min-width: 46px;
+}
+
+/* 론/쯔모 범례 */
+.st-legend {
+    margin: 0;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.st-legend .lg-ron {
+    color: #f3a8c8;
+    font-weight: 700;
+}
+
+.st-legend .lg-tsumo {
+    color: var(--jade);
+    font-weight: 700;
+}
+
+/* 70부 이상 보기/접기 버튼 */
+.fu-toggle {
+    align-self: center;
+    padding: 8px 16px;
+    border-radius: 9px;
+    border: 1px solid rgba(237, 231, 210, 0.25);
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fu-toggle:active {
+    transform: translateY(1px);
+}
+
+.fu-toggle:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 1px;
 }
 
 /* ---- 역 목록 ---- */

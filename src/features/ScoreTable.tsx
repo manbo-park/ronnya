@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { computePoints } from '../core/points';
 
-// 사진과 동일한 부수 열 (20~110부)
-const FU_COLS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+// 기본은 20~60부만 노출(가로 스크롤 없음). 70부 이상은 버튼으로 확장.
+const FU_BASE = [20, 25, 30, 40, 50, 60];
+const FU_EXT = [70, 80, 90, 100, 110];
 const HAN_ROWS = [1, 2, 3, 4];
 
 // 만관 이상은 점수 없이 명칭만 표시. 판수 구간별로 행을 묶는다.
@@ -20,13 +21,29 @@ const fmt = (n: number) => n.toLocaleString('ko-KR');
 const basePoints = (han: number, fu: number) => fu * Math.pow(2, 2 + han);
 const isMangan = (han: number, fu: number) => basePoints(han, fu) >= 2000;
 
-function ronTotal(han: number, fu: number, dealer: boolean): number {
+// 성립하지 않는 칸: 20부/25부는 각각 핑후 쯔모·치또이 전용이라 최소 2판
+const impossible = (han: number, fu: number) => (fu === 20 || fu === 25) && han < 2;
+
+function ronText(han: number, fu: number, dealer: boolean): string {
+    if (fu === 20) return '—'; // 20부 론은 존재하지 않음(핑후 쯔모 전용)
+    if (impossible(han, fu)) return '—';
     const pm = computePoints(han, fu, 0, dealer, false).payment;
-    return pm.kind === 'ron' ? pm.total : 0;
+    return pm.kind === 'ron' ? fmt(pm.total) : '—';
+}
+
+function tsumoText(han: number, fu: number, dealer: boolean): string {
+    if (impossible(han, fu)) return '—';
+    const pm = computePoints(han, fu, 0, dealer, true).payment;
+    if (pm.kind === 'tsumoDealer') return `${fmt(pm.each)} 올`;
+    if (pm.kind === 'tsumoNonDealer') return `${fmt(pm.others)}/${fmt(pm.dealer)}`;
+    return '—';
 }
 
 export function ScoreTable() {
     const [dealer, setDealer] = useState(false);
+    const [expanded, setExpanded] = useState(false);
+
+    const visibleFu = expanded ? [...FU_BASE, ...FU_EXT] : FU_BASE;
 
     return (
         <div className="score-table">
@@ -49,57 +66,79 @@ export function ScoreTable() {
                 </button>
             </div>
 
-            <table className="st-table">
-                <thead>
-                    <tr>
-                        <th className="st-corner" />
-                        {FU_COLS.map((fu) => (
-                            <th key={fu}>{fu}부</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {HAN_ROWS.map((han) => {
-                        // 같은 판이라도 부수가 커지면 만관에 도달 → 그 구간을 한 칸으로 병합
-                        const manganIdx = FU_COLS.findIndex((fu) => isMangan(han, fu));
-                        const valueCount = manganIdx === -1 ? FU_COLS.length : manganIdx;
-                        return (
-                            <tr key={han}>
-                                <th className="st-han">{han}판</th>
-                                {FU_COLS.slice(0, valueCount).map((fu) => (
-                                    <td key={fu}>
-                                        {fu === 25 && han === 1
-                                            ? '불가능'
-                                            : fmt(ronTotal(han, fu, dealer))}
-                                    </td>
-                                ))}
-                                {manganIdx !== -1 && (
-                                    <td className="st-limit" colSpan={FU_COLS.length - valueCount}>
-                                        만관
-                                    </td>
-                                )}
-                            </tr>
-                        );
-                    })}
+            <p className="st-legend">
+                <span className="lg-ron">론</span> 윗줄 · <span className="lg-tsumo">쯔모</span>{' '}
+                아랫줄
+                {dealer ? ' (3명 각자 지불)' : ' (자/친 지불)'}
+            </p>
 
-                    {LIMIT_GROUPS.map((g) =>
-                        g.labels.map((label, i) => (
-                            <tr key={label}>
-                                <th className="st-han">{label}</th>
-                                {i === 0 && (
-                                    <td
-                                        className="st-limit"
-                                        rowSpan={g.labels.length}
-                                        colSpan={FU_COLS.length}
-                                    >
-                                        {g.name}
-                                    </td>
-                                )}
-                            </tr>
-                        )),
-                    )}
-                </tbody>
-            </table>
+            <div className="st-scroll">
+                <table className={`st-table ${expanded ? 'expanded' : ''}`}>
+                    <thead>
+                        <tr>
+                            <th className="st-corner" />
+                            {visibleFu.map((fu) => (
+                                <th key={fu}>{`${fu}부`}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {HAN_ROWS.map((han) => {
+                            // 부수가 커지면 만관에 도달 → 보이는 만관 구간을 한 칸으로 병합
+                            const manganIdx = visibleFu.findIndex((fu) => isMangan(han, fu));
+                            const valueCount = manganIdx === -1 ? visibleFu.length : manganIdx;
+                            return (
+                                <tr key={han}>
+                                    <th className="st-han">{`${han}판`}</th>
+                                    {visibleFu.slice(0, valueCount).map((fu) => (
+                                        <td key={fu}>
+                                            <span className="st-ron">
+                                                {ronText(han, fu, dealer)}
+                                            </span>
+                                            <span className="st-tsumo">
+                                                {tsumoText(han, fu, dealer)}
+                                            </span>
+                                        </td>
+                                    ))}
+                                    {manganIdx !== -1 && (
+                                        <td
+                                            className="st-limit"
+                                            colSpan={visibleFu.length - valueCount}
+                                        >
+                                            만관
+                                        </td>
+                                    )}
+                                </tr>
+                            );
+                        })}
+
+                        {LIMIT_GROUPS.map((g) =>
+                            g.labels.map((label, i) => (
+                                <tr key={label}>
+                                    <th className="st-han">{label}</th>
+                                    {i === 0 && (
+                                        <td
+                                            className="st-limit"
+                                            rowSpan={g.labels.length}
+                                            colSpan={visibleFu.length}
+                                        >
+                                            {g.name}
+                                        </td>
+                                    )}
+                                </tr>
+                            )),
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            <button
+                className="fu-toggle"
+                onClick={() => setExpanded((v) => !v)}
+                aria-expanded={expanded}
+            >
+                {expanded ? '70부 이상 접기' : '70부 이상 보기'}
+            </button>
         </div>
     );
 }

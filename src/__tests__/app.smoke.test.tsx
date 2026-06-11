@@ -35,10 +35,10 @@ describe('앱 스모크 테스트', () => {
         expect(html).toContain('정답 보기');
     });
 
-    it('/score-table: 점수표가 자/친 전환과 점수, 만관 이상 명칭과 함께 출력된다', () => {
+    it('/score-table: 론/쯔모 2줄 표기와 만관 이상 명칭, 기본 60부까지 출력된다', () => {
         const html = renderAt('/score-table');
         expect(html).toContain('점수표');
-        // 자/친 버튼 (괄호 라벨 제거됨)
+        // 자/친 버튼 (괄호 라벨 없음)
         expect(html).toContain('>자<');
         expect(html).toContain('>친<');
         expect(html).not.toContain('비친');
@@ -46,15 +46,21 @@ describe('앱 스모크 테스트', () => {
         // 하단 안내문구 제거
         expect(html).not.toContain('절상 만관 미적용');
         expect(html).not.toContain('0본장');
-        // 1판 25부는 불가능, 자 4판 30부 론 = 7700
-        expect(html).toContain('불가능');
+        // 론/쯔모 2줄 표기 유지
+        expect(html).toContain('st-ron');
+        expect(html).toContain('st-tsumo');
+        // 자 4판 30부 론 = 7700
         expect(html).toContain('7,700');
-        // 만관 이상은 명칭만 (점수 없음)
+        // 만관 이상은 명칭만
         expect(html).toContain('만관');
         expect(html).toContain('하네만');
         expect(html).toContain('배만');
         expect(html).toContain('삼배만');
         expect(html).toContain('헤아림 역만');
+        // 기본은 60부까지, 70부 이상은 버튼으로 확장 (110부 열은 기본 비표시)
+        expect(html).toContain('60부');
+        expect(html).not.toContain('110부');
+        expect(html).toContain('70부 이상');
     });
 
     it('/yaku: 역 목록이 이름·설명·배지와 함께 출력된다', () => {

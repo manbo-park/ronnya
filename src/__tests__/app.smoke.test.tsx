@@ -22,7 +22,7 @@ describe('앱 스모크 테스트', () => {
     it('/score: 도전 Phase가 서버 렌더링으로 출력된다', () => {
         const html = renderAt('/score');
         expect(html).toContain('점수 계산 연습');
-        expect(html).toContain('왕패');
+        expect(html).toContain('도라표시패');
         expect(html).toContain('장풍');
         expect(html).toContain('확인');
         expect(html).toContain('정답 보기');

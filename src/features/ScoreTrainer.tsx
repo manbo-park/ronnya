@@ -61,14 +61,14 @@ export function ScoreTrainer() {
                 </div>
 
                 <div className="dora-row">
-                    <span className="row-label">장풍</span>
+                    <span className="row-label">장풍패</span>
                     <TileView tile={{ suit: 'z', rank: p.roundWind }} />
-                    <span className="row-label">자풍</span>
+                    <span className="row-label">자풍패</span>
                     <TileView tile={{ suit: 'z', rank: p.seatWind }} />
                 </div>
 
                 <div className="dora-row">
-                    <span className="row-label">왕패</span>
+                    <span className="row-label">도라표시패</span>
                     <div className="tile-group">
                         {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
                             i < p.doraIndicators.length ? (

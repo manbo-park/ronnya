@@ -173,6 +173,9 @@ body {
     border-radius: 6px;
     padding: 3px 7px 3px 9px; /* letter-spacing이 만드는 우측 잉여 보정 */
     margin-right: 4px;
+    /* 모든 라벨 폭을 가장 긴 '도라표시패' 기준으로 통일해 각 행 첫 패의 세로 정렬을 맞춘다 */
+    min-width: 84px;
+    text-align: center;
 }
 
 .dora-row .row-label:not(:first-child) {

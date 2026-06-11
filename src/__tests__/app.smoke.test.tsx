@@ -14,7 +14,7 @@ function renderAt(path: string): string {
 describe('앱 스모크 테스트', () => {
     it('홈: 트레이닝/유틸리티 그룹과 메뉴가 출력된다', () => {
         const html = renderAt('/');
-        expect(html).toContain('ronnya');
+        expect(html).toContain('론냐!');
         expect(html).toContain('점수 계산 연습');
         expect(html).toContain('href="/score"');
         // 유틸리티 메뉴

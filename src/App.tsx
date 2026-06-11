@@ -53,8 +53,22 @@ function Page({
     return (
         <>
             <header className="app-header">
-                <Link to="/" className="home-link">
-                    ← 홈
+                <Link to="/" className="home-link" aria-label="홈으로">
+                    {/* 픽셀 그리드(8×8)로 그린 집 아이콘 */}
+                    <svg
+                        viewBox="0 0 8 8"
+                        shapeRendering="crispEdges"
+                        fill="currentColor"
+                        aria-hidden="true"
+                    >
+                        <rect x="3" y="0" width="2" height="1" />
+                        <rect x="2" y="1" width="4" height="1" />
+                        <rect x="1" y="2" width="6" height="1" />
+                        <rect x="0" y="3" width="8" height="1" />
+                        <rect x="1" y="4" width="6" height="1" />
+                        <rect x="1" y="5" width="2" height="3" />
+                        <rect x="5" y="5" width="2" height="3" />
+                    </svg>
                 </Link>
                 <h1>{title}</h1>
             </header>

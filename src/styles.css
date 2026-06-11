@@ -23,6 +23,9 @@ html,
 body {
     margin: 0;
     padding: 0;
+    /* 넓은 블록(펼친 점수표 등)에서 모바일 브라우저가 글자를 자동 확대하지 않도록 */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -632,6 +635,8 @@ body {
     table-layout: fixed;
     border-collapse: collapse;
     font-variant-numeric: tabular-nums;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 .st-table th,

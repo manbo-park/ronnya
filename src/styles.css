@@ -907,6 +907,147 @@ body {
     opacity: 0.8;
 }
 
+/* ---- 인터랙티브 애니메이션 ---- */
+/* 등장: 아래에서 살짝 떠오르기 */
+@keyframes rise-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 등장: 게임풍으로 통통 튀는 강조 */
+@keyframes pop-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    70% {
+        transform: scale(1.12);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 오답: 좌우 흔들림 */
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    50% {
+        transform: translateX(5px);
+    }
+    75% {
+        transform: translateX(-3px);
+    }
+}
+
+/* 페이지 진입: 본문 카드 떠오르기 */
+.card {
+    animation: rise-in 0.25s ease-out backwards;
+}
+
+/* 홈 메뉴: 카드가 순서대로 떠오른다 (의미 단위 스태거) */
+.menu-card {
+    animation: rise-in 0.3s ease-out backwards;
+    transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease,
+        border-color 0.12s ease;
+}
+
+.menu-card:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.menu-section + .menu-section .menu-card {
+    animation-delay: 0.12s;
+}
+
+.menu-section + .menu-section .menu-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+/* 상태 변화는 중단 가능하도록 transition으로 처리 */
+.btn,
+.seat-btn,
+.fu-toggle,
+.home-link {
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        border-color 0.12s ease,
+        color 0.12s ease,
+        background-color 0.12s ease,
+        filter 0.12s ease;
+}
+
+.field input {
+    transition: border-color 0.12s ease;
+}
+
+/* 호버 지원 기기에서만: 끈적이는 모바일 호버 방지 */
+@media (hover: hover) {
+    .menu-card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.4);
+        border-color: var(--pop);
+    }
+
+    .btn.primary:hover:not(:disabled) {
+        filter: brightness(1.08);
+    }
+
+    .btn.ghost:hover,
+    .fu-toggle:hover,
+    .home-link:hover {
+        border-color: var(--pop);
+        color: var(--text);
+    }
+
+    .seat-btn:not(.active):hover {
+        color: var(--text);
+    }
+}
+
+/* 호버보다 눌림이 우선하도록 호버 블록 뒤에 선언 */
+.menu-card:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* 해답 공개: 판정 → 명판 → 상세가 순서대로 떠오른다 */
+.answer > * {
+    animation: rise-in 0.3s ease-out backwards;
+}
+
+.answer > *:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.answer > *:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+/* 정답은 통통 튀고, 오답은 흔들린다 */
+.verdict.ok {
+    animation: pop-in 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
+}
+
+.verdict.no {
+    animation: shake 0.4s ease backwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
     * {
         transition: none !important;

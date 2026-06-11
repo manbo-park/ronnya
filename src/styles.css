@@ -1080,6 +1080,111 @@ body {
     animation: shake 0.4s ease backwards;
 }
 
+/* ---- PC 반응형 (#19) ----
+   모바일 레이아웃은 그대로 두고, 768px 이상에서만 컨테이너를 넓히고
+   남는 가로 공간을 패 확대·2열 배치로 활용한다 */
+@media (min-width: 768px) {
+    .app {
+        max-width: 760px;
+        padding: 36px 28px calc(44px + env(safe-area-inset-bottom));
+    }
+
+    .app-header {
+        margin-bottom: 22px;
+    }
+
+    .app-header h1 {
+        font-size: 26px;
+    }
+
+    .card {
+        padding: 20px 18px;
+    }
+
+    /* 넓어진 카드에 맞춰 패 크기를 키운다 (멘젠 13장도 한 줄 유지) */
+    :root {
+        --tile-w: 40px;
+    }
+
+    .hand-menzen {
+        --tile-w: 34px;
+    }
+
+    .row-label {
+        font-size: 11px;
+        min-width: 92px;
+    }
+
+    /* 홈 메뉴: 카드 여백·타이포를 키워 PC 밀도에 맞춘다 */
+    .menu-grid {
+        gap: 12px;
+    }
+
+    .menu-card {
+        padding: 26px 20px;
+        gap: 8px;
+    }
+
+    .menu-title {
+        font-size: 16px;
+    }
+
+    .menu-desc {
+        font-size: 13px;
+    }
+
+    /* 해답: 판·부수 테이블을 좌우 2열로 배치한다 */
+    .answer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+        gap: 14px 18px;
+    }
+
+    .answer > .verdict,
+    .answer > .plaque,
+    .answer > .actions {
+        grid-column: 1 / -1;
+    }
+
+    /* 만관 이상으로 부수 테이블이 없으면 판 테이블이 전체 폭을 쓴다 */
+    .answer > table:only-of-type {
+        grid-column: 1 / -1;
+    }
+
+    .detail-table {
+        font-size: 14px;
+    }
+
+    /* 점수표: 넓어진 열에 맞춰 글자를 키운다 */
+    .st-table th,
+    .st-table td {
+        font-size: 13px;
+    }
+
+    .st-limit-name {
+        font-size: 14px;
+    }
+
+    /* 역 목록: 카드 2열 배치 */
+    .yaku-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        align-items: start;
+        gap: 10px;
+    }
+
+    .yaku-group-title {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+    }
+
+    /* 2열 카드 폭(약 320px)에서 예시 14장이 한 줄에 들어가는 크기 */
+    .yaku-example {
+        --tile-w: 20px;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     * {
         transition: none !important;

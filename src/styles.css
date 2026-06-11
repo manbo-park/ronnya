@@ -67,20 +67,34 @@ body {
     margin-bottom: 14px;
 }
 
-/* 세부 메뉴 → 홈 이동 버튼 */
+/* 세부 메뉴 → 홈 이동 아이콘 버튼 */
 .home-link {
     position: absolute;
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    font-family: var(--font-px);
-    font-size: 11px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
     color: var(--muted);
     text-decoration: none;
-    padding: 5px 9px;
     border: 2px solid var(--panel-edge);
     background: var(--bg-deep);
     box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* 보이는 크기는 32px로 유지하되 터치 영역은 40px 이상 확보 */
+.home-link::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+}
+
+.home-link svg {
+    width: 14px;
+    height: 14px;
+    display: block;
 }
 
 .home-link:focus-visible {

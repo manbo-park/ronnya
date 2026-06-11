@@ -40,13 +40,16 @@ function tsumoText(han: number, fu: number, dealer: boolean): string {
 }
 
 // 만관 이상 칸: 명칭 + 론/쯔모 점수 (부수는 무의미하므로 30부로 계산)
+// 명칭을 점수 옆에 두어 일반 칸과 같은 2줄 높이를 유지한다 (펼침/접힘 시 행 높이 고정)
 function LimitCell({ name, han, dealer }: { name: string; han: number; dealer: boolean }) {
     return (
-        <>
+        <div className="st-limit-inner">
             <span className="st-limit-name">{name}</span>
-            <span className="st-ron">{ronText(han, 30, dealer)}</span>
-            <span className="st-tsumo">{tsumoText(han, 30, dealer)}</span>
-        </>
+            <span className="st-limit-scores">
+                <span className="st-ron">{ronText(han, 30, dealer)}</span>
+                <span className="st-tsumo">{tsumoText(han, 30, dealer)}</span>
+            </span>
+        </div>
     );
 }
 

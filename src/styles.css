@@ -736,19 +736,17 @@ body {
     letter-spacing: 0.04em;
 }
 
-/* 만관 이상 칸은 펼침/접힘(table-layout 변화)과 무관하게 고정 크기로 통일 */
+/* 명칭을 점수 옆에 배치해 일반 칸과 같은 2줄 높이를 유지한다 */
+.st-limit-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* 명칭만 살짝 크게. 점수는 일반 칸 크기를 그대로 상속해 행 높이를 일치시킨다 */
 .st-limit-name {
-    display: block;
     font-size: 13px;
-    margin-bottom: 2px;
-}
-
-.st-limit .st-ron {
-    font-size: 11px;
-}
-
-.st-limit .st-tsumo {
-    font-size: 10px;
 }
 
 /* 론/쯔모 범례 */

@@ -35,17 +35,26 @@ describe('앱 스모크 테스트', () => {
         expect(html).toContain('정답 보기');
     });
 
-    it('/score-table: 점수표가 자/친 전환과 안내 텍스트, 점수와 함께 출력된다', () => {
+    it('/score-table: 점수표가 자/친 전환과 점수, 만관 이상 명칭과 함께 출력된다', () => {
         const html = renderAt('/score-table');
         expect(html).toContain('점수표');
-        expect(html).toContain('자 (비친)');
-        expect(html).toContain('친 (오야)');
-        // 부수 안내
-        expect(html).toContain('핑후 쯔모');
-        expect(html).toContain('치또이');
-        // 자 4판 30부 론 = 7700, 만관 론 = 8000
+        // 자/친 버튼 (괄호 라벨 제거됨)
+        expect(html).toContain('>자<');
+        expect(html).toContain('>친<');
+        expect(html).not.toContain('비친');
+        expect(html).not.toContain('오야');
+        // 하단 안내문구 제거
+        expect(html).not.toContain('절상 만관 미적용');
+        expect(html).not.toContain('0본장');
+        // 1판 25부는 불가능, 자 4판 30부 론 = 7700
+        expect(html).toContain('불가능');
         expect(html).toContain('7,700');
-        expect(html).toContain('8,000');
+        // 만관 이상은 명칭만 (점수 없음)
+        expect(html).toContain('만관');
+        expect(html).toContain('하네만');
+        expect(html).toContain('배만');
+        expect(html).toContain('삼배만');
+        expect(html).toContain('헤아림 역만');
     });
 
     it('/yaku: 역 목록이 이름·설명·배지와 함께 출력된다', () => {

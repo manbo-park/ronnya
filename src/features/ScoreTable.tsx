@@ -1,43 +1,28 @@
 import { useState } from 'react';
 import { computePoints } from '../core/points';
 
-const FU_COLS = [20, 25, 30, 40, 50, 60, 70];
+// 사진과 동일한 부수 열 (20~110부)
+const FU_COLS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 const HAN_ROWS = [1, 2, 3, 4];
 
-// 부수별 안내 (핑후 쯔모 = 20부, 치또이 = 25부)
-const FU_NOTE: Record<number, string> = { 20: '핑후 쯔모', 25: '치또이' };
-
-// 만관 이상은 부수가 점수에 무의미하므로 별도 정리 행으로 노출
-const LIMITS: { name: string; han: number }[] = [
-    { name: '만관', han: 5 },
-    { name: '하네만', han: 6 },
-    { name: '배만', han: 8 },
-    { name: '삼배만', han: 11 },
-    { name: '헤아림역만 · 역만', han: 13 },
+// 만관 이상은 점수 없이 명칭만 표시. 판수 구간별로 행을 묶는다.
+const LIMIT_GROUPS: { labels: string[]; name: string }[] = [
+    { labels: ['5판'], name: '만관' },
+    { labels: ['6판', '7판'], name: '하네만' },
+    { labels: ['8판', '9판', '10판'], name: '배만' },
+    { labels: ['11판', '12판'], name: '삼배만' },
+    { labels: ['13판 이상'], name: '헤아림 역만' },
 ];
 
 const fmt = (n: number) => n.toLocaleString('ko-KR');
 
-/** 해당 (판, 부) 조합이 실제로 성립하지 않는 칸인지 */
-function impossible(han: number, fu: number): boolean {
-    if (fu === 20 && han < 2) return true; // 핑후 쯔모는 최소 2판(핑후+쯔모)
-    if (fu === 25 && han < 2) return true; // 치또이는 최소 2판
-    return false;
-}
+// 기본점 = 부 × 2^(2+판). 2000 이상이면 만관으로 절상되어 부수가 무의미해진다.
+const basePoints = (han: number, fu: number) => fu * Math.pow(2, 2 + han);
+const isMangan = (han: number, fu: number) => basePoints(han, fu) >= 2000;
 
-function ronText(han: number, fu: number, dealer: boolean): string {
-    if (fu === 20) return '—'; // 20부 론은 존재하지 않음(핑후 쯔모 전용)
-    if (impossible(han, fu)) return '—';
+function ronTotal(han: number, fu: number, dealer: boolean): number {
     const pm = computePoints(han, fu, 0, dealer, false).payment;
-    return pm.kind === 'ron' ? fmt(pm.total) : '—';
-}
-
-function tsumoText(han: number, fu: number, dealer: boolean): string {
-    if (impossible(han, fu)) return '—';
-    const pm = computePoints(han, fu, 0, dealer, true).payment;
-    if (pm.kind === 'tsumoDealer') return `${fmt(pm.each)} 올`;
-    if (pm.kind === 'tsumoNonDealer') return `${fmt(pm.others)} / ${fmt(pm.dealer)}`;
-    return '—';
+    return pm.kind === 'ron' ? pm.total : 0;
 }
 
 export function ScoreTable() {
@@ -52,7 +37,7 @@ export function ScoreTable() {
                     className={`seat-btn ${!dealer ? 'active' : ''}`}
                     onClick={() => setDealer(false)}
                 >
-                    자 (비친)
+                    자
                 </button>
                 <button
                     role="tab"
@@ -60,63 +45,61 @@ export function ScoreTable() {
                     className={`seat-btn ${dealer ? 'active' : ''}`}
                     onClick={() => setDealer(true)}
                 >
-                    친 (오야)
+                    친
                 </button>
             </div>
 
-            <p className="st-legend">
-                각 칸은 <b>윗줄 = 론</b>, <b>아랫줄 = 쯔모</b>
-                {dealer ? ' (3명 각자 지불)' : ' (자 지불 / 친 지불)'}.
-            </p>
-
-            <div className="st-scroll">
-                <table className="st-table">
-                    <thead>
-                        <tr>
-                            <th className="st-corner">판 \ 부</th>
-                            {FU_COLS.map((fu) => (
-                                <th key={fu}>
-                                    {fu}부
-                                    {FU_NOTE[fu] && (
-                                        <span className="st-fu-note">{FU_NOTE[fu]}</span>
-                                    )}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {HAN_ROWS.map((han) => (
+            <table className="st-table">
+                <thead>
+                    <tr>
+                        <th className="st-corner" />
+                        {FU_COLS.map((fu) => (
+                            <th key={fu}>{fu}부</th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {HAN_ROWS.map((han) => {
+                        // 같은 판이라도 부수가 커지면 만관에 도달 → 그 구간을 한 칸으로 병합
+                        const manganIdx = FU_COLS.findIndex((fu) => isMangan(han, fu));
+                        const valueCount = manganIdx === -1 ? FU_COLS.length : manganIdx;
+                        return (
                             <tr key={han}>
                                 <th className="st-han">{han}판</th>
-                                {FU_COLS.map((fu) => (
+                                {FU_COLS.slice(0, valueCount).map((fu) => (
                                     <td key={fu}>
-                                        <span className="st-ron">{ronText(han, fu, dealer)}</span>
-                                        <span className="st-tsumo">
-                                            {tsumoText(han, fu, dealer)}
-                                        </span>
+                                        {fu === 25 && han === 1
+                                            ? '불가능'
+                                            : fmt(ronTotal(han, fu, dealer))}
                                     </td>
                                 ))}
+                                {manganIdx !== -1 && (
+                                    <td className="st-limit" colSpan={FU_COLS.length - valueCount}>
+                                        만관
+                                    </td>
+                                )}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        );
+                    })}
 
-            <table className="st-table st-limits">
-                <tbody>
-                    {LIMITS.map((l) => (
-                        <tr key={l.name}>
-                            <th className="st-han">{l.name}</th>
-                            <td>
-                                <span className="st-ron">{ronText(l.han, 30, dealer)}</span>
-                                <span className="st-tsumo">{tsumoText(l.han, 30, dealer)}</span>
-                            </td>
-                        </tr>
-                    ))}
+                    {LIMIT_GROUPS.map((g) =>
+                        g.labels.map((label, i) => (
+                            <tr key={label}>
+                                <th className="st-han">{label}</th>
+                                {i === 0 && (
+                                    <td
+                                        className="st-limit"
+                                        rowSpan={g.labels.length}
+                                        colSpan={FU_COLS.length}
+                                    >
+                                        {g.name}
+                                    </td>
+                                )}
+                            </tr>
+                        )),
+                    )}
                 </tbody>
             </table>
-
-            <p className="st-foot">절상 만관 미적용 · 0본장 기준</p>
         </div>
     );
 }

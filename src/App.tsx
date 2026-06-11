@@ -23,7 +23,7 @@ export default function App() {
                 <Route
                     path="/score-table"
                     element={
-                        <Page title="점수표" footer="작혼 룰 기준 · 절상 만관 미적용">
+                        <Page title="점수표">
                             <ScoreTable />
                         </Page>
                     }
@@ -47,7 +47,7 @@ function Page({
     children,
 }: {
     title: string;
-    footer: string;
+    footer?: string;
     children: React.ReactNode;
 }) {
     return (
@@ -61,7 +61,7 @@ function Page({
 
             {children}
 
-            <footer className="app-footer">{footer}</footer>
+            {footer && <footer className="app-footer">{footer}</footer>}
         </>
     );
 }

@@ -620,92 +620,45 @@ body {
     outline-offset: 1px;
 }
 
-.st-legend,
-.st-foot {
-    font-size: 11px;
-    color: var(--muted);
-    margin: 0;
-}
-
-.st-legend b {
-    color: var(--text);
-}
-
-.st-foot {
-    text-align: center;
-    opacity: 0.8;
-}
-
-.st-scroll {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 10px;
-}
-
+/* 가로 스크롤 없이 11개 부수 열이 한 화면에 들어가도록 고정 레이아웃 */
 .st-table {
-    border-collapse: collapse;
     width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
     font-variant-numeric: tabular-nums;
 }
 
 .st-table th,
 .st-table td {
-    border: 1px solid rgba(237, 231, 210, 0.12);
-    padding: 5px 6px;
+    border: 1px solid rgba(237, 231, 210, 0.14);
+    padding: 6px 1px;
     text-align: center;
+    font-size: clamp(9px, 2.6vw, 12px);
     white-space: nowrap;
+    overflow: hidden;
 }
 
 .st-table thead th {
-    font-size: 11px;
     color: var(--brass);
     background: rgba(216, 180, 90, 0.08);
+    font-weight: 700;
 }
 
-.st-fu-note {
-    display: block;
-    font-size: 9px;
-    font-weight: 400;
-    color: var(--muted);
-    letter-spacing: 0.02em;
-}
-
-.st-corner {
-    color: var(--brass-dim) !important;
-    font-size: 10px !important;
-}
-
+/* 판 라벨(첫 열)은 약간 좁게 고정 */
+.st-corner,
 .st-han {
-    font-size: 12px;
+    width: 13%;
     color: var(--brass);
     background: rgba(216, 180, 90, 0.06);
+    font-weight: 700;
 }
 
-.st-table td {
-    font-size: 11px;
-}
-
-.st-ron,
-.st-tsumo {
-    display: block;
-    line-height: 1.45;
-}
-
-.st-ron {
-    color: #f3a8c8;
-}
-
-.st-tsumo {
-    color: var(--jade);
-}
-
-.st-limits {
-    margin-top: 2px;
-}
-
-.st-limits .st-han {
-    text-align: center;
-    min-width: 96px;
+/* 만관 이상·계단형 병합 칸: 명칭만 표시 */
+.st-limit {
+    color: var(--brass);
+    background: rgba(216, 180, 90, 0.1);
+    font-weight: 700;
+    letter-spacing: 0.04em;
 }
 
 /* ---- 역 목록 ---- */

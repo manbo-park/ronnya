@@ -15,12 +15,15 @@ export function ScoreTrainer() {
     const [answer, setAnswer] = useState('');
     // 정답 보기로 넘어온 경우: 채점(정답/오답) 대신 중립 표시
     const [revealed, setRevealed] = useState(false);
+    // 문제마다 손패 영역을 리마운트해 모든 도라패의 광택 애니메이션을 같은 프레임에 시작시킨다
+    const [round, setRound] = useState(0);
 
     const next = useCallback(() => {
         setGp(generateProblem());
         setAnswer('');
         setRevealed(false);
         setPhase('challenge');
+        setRound((n) => n + 1);
     }, []);
 
     const p = gp.problem;
@@ -78,6 +81,7 @@ export function ScoreTrainer() {
                 </div>
 
                 <div
+                    key={round}
                     className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'} ${
                         p.melds.length === 0 ? 'hand-menzen' : ''
                     }`}

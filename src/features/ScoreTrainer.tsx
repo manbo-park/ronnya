@@ -1,13 +1,15 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { generateProblem, type GeneratedProblem } from '../core/generator';
 import { nextDoraId, tileId } from '../core/tiles';
 import type { Payment, ScoringResult, Tile } from '../core/types';
 import { MeldView, TileView } from '../components/Tiles';
 
-type Phase = 'challenge' | 'answer';
+type Phase = 'challenge' | 'answer' | 'loading';
 
 const DORA_INDICATOR_SLOTS = 5; // 왕패의 도라표시패 자리 수
 const NON_DEALER_TSUMO_RE = /^\d+\s+\d+$/;
+// 리셋·다음 문제 시 새 문제를 공개하기 전 로딩 UI를 보여주는 시간
+const LOADING_MS = 480;
 
 export function ScoreTrainer() {
     const [gp, setGp] = useState<GeneratedProblem>(() => generateProblem());
@@ -17,13 +19,28 @@ export function ScoreTrainer() {
     const [revealed, setRevealed] = useState(false);
     // 문제마다 손패 영역을 리마운트해 모든 도라패의 광택 애니메이션을 같은 프레임에 시작시킨다
     const [round, setRound] = useState(0);
+    // 로딩 표시 후 새 문제를 공개하기 위한 타이머
+    const loadTimer = useRef<number | null>(null);
+
+    useEffect(
+        () => () => {
+            if (loadTimer.current !== null) window.clearTimeout(loadTimer.current);
+        },
+        [],
+    );
 
     const next = useCallback(() => {
-        setGp(generateProblem());
-        setAnswer('');
-        setRevealed(false);
-        setPhase('challenge');
-        setRound((n) => n + 1);
+        // 먼저 로딩 UI를 노출하고, 짧은 텀 뒤에 새 문제로 교체한다
+        setPhase('loading');
+        if (loadTimer.current !== null) window.clearTimeout(loadTimer.current);
+        loadTimer.current = window.setTimeout(() => {
+            setGp(generateProblem());
+            setAnswer('');
+            setRevealed(false);
+            setPhase('challenge');
+            setRound((n) => n + 1);
+            loadTimer.current = null;
+        }, LOADING_MS);
     }, []);
 
     const p = gp.problem;
@@ -48,7 +65,10 @@ export function ScoreTrainer() {
     return (
         <div className="trainer">
             <section className="card">
-                <div className="badges">
+                {phase === 'loading' && <LoadingView />}
+                {phase !== 'loading' && (
+                    <>
+                        <div className="badges">
                     <span className={`badge badge-seat ${dealer ? 'b-dealer' : 'b-nondealer'}`}>
                         {dealer ? '친' : '자'}
                     </span>
@@ -109,7 +129,18 @@ export function ScoreTrainer() {
                 ) : (
                     <AnswerView result={r} correct={correct} revealed={revealed} onNext={next} />
                 )}
+                    </>
+                )}
             </section>
+        </div>
+    );
+}
+
+function LoadingView() {
+    return (
+        <div className="loading" role="status" aria-live="polite">
+            <span className="loading-spinner" aria-hidden="true" />
+            <span className="loading-text">다음 문제 준비 중…</span>
         </div>
     );
 }

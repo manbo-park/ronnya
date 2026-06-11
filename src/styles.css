@@ -684,10 +684,19 @@ body {
     letter-spacing: 0.04em;
 }
 
+/* 만관 이상 칸은 펼침/접힘(table-layout 변화)과 무관하게 고정 크기로 통일 */
 .st-limit-name {
     display: block;
-    font-size: 1.15em;
+    font-size: 13px;
     margin-bottom: 2px;
+}
+
+.st-limit .st-ron {
+    font-size: 11px;
+}
+
+.st-limit .st-tsumo {
+    font-size: 10px;
 }
 
 /* 70부 이상 확장 시: 내용 폭만큼 늘려 가로 스크롤 허용 */

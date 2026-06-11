@@ -56,13 +56,15 @@ export function ScoreTrainer() {
 
                 <div className="dora-row">
                     <span className="row-label">왕패</span>
-                    {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
-                        i < p.doraIndicators.length ? (
-                            <TileView key={i} tile={p.doraIndicators[i]} />
-                        ) : (
-                            <TileView key={i} back />
-                        ),
-                    )}
+                    <div className="tile-group">
+                        {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
+                            i < p.doraIndicators.length ? (
+                                <TileView key={i} tile={p.doraIndicators[i]} />
+                            ) : (
+                                <TileView key={i} back />
+                            ),
+                        )}
+                    </div>
                 </div>
 
                 <div

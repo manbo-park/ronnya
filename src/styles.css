@@ -663,14 +663,21 @@ body {
 
 /* 펼침/접힘 모두 동일한 고정 레이아웃 + 컨테이너 기준 열 너비로 통일 */
 .st-scroll {
-    overflow-x: auto;
+    /* 접힘: 열 너비 합이 정확히 100cqw라 내용이 컨테이너에 딱 맞지만,
+       서브픽셀 반올림으로 1px 미만 넘치면 PC에서 가로 스크롤바가 생기므로 차단 */
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     border: 2px solid var(--panel-edge);
     container-type: inline-size; /* cqw = 스크롤 컨테이너 너비의 1% (펼침/접힘 무관 동일) */
 }
 
+/* 펼침: 70부 이상 열이 컨테이너보다 넓어지므로 가로 스크롤 허용 */
+.st-scroll.is-expanded {
+    overflow-x: auto;
+}
+
 .st-table {
-    width: 100%; /* cqw 미지원 시 폴백 */
+    width: 100%; /* 접힘 상태 기본 너비(가로 스크롤 없음) 겸 cqw 미지원 폴백 */
     table-layout: fixed;
     border-collapse: collapse;
     font-variant-numeric: tabular-nums;

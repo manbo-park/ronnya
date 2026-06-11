@@ -86,10 +86,17 @@ export function ScoreTable() {
                 {dealer ? ' (3명 각자 지불)' : ' (자/친 지불)'}
             </p>
 
-            <div className="st-scroll">
+            <div className={`st-scroll ${expanded ? 'is-expanded' : ''}`}>
+                {/* 접힘(기본 6열)은 width:100%로 컨테이너에 정확히 맞춰 가로 스크롤바가
+                    생기지 않게 하고, 펼침에서만 열 수에 비례해 넓혀 가로 스크롤로 본다.
+                    (100cqw 인라인 지정은 소수점 반올림으로 1px 넘쳐 PC에서 스크롤바 유발) */}
                 <table
                     className={`st-table ${expanded ? 'expanded' : ''}`}
-                    style={{ width: `calc(13cqw + ${visibleFu.length} * 14.5cqw)` }}
+                    style={
+                        expanded
+                            ? { width: `calc(13cqw + ${visibleFu.length} * 14.5cqw)` }
+                            : undefined
+                    }
                 >
                     <colgroup>
                         <col className="st-col-label" />

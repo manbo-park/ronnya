@@ -32,18 +32,38 @@ export function TileView({
     /** 도라 (적도라는 tile.red로 자동 판정) */
     dora?: boolean;
 }) {
+    // 패 SVG는 장당 30~60KB로 무거워서, 역 목록처럼 패가 수백 장인 화면은
+    // 화면 밖 이미지를 지연 로드해야 첫 화면이 빨리 뜬다 (#16)
     if (back || !tile) {
         return (
             <div className="tile" aria-hidden="true">
-                <img className="tile-img" src={TILE_URLS.Back} alt="" />
+                <img
+                    className="tile-img"
+                    src={TILE_URLS.Back}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                />
             </div>
         );
     }
     const shine = dora || tile.red;
     return (
         <div className={`tile ${win ? 'tile-win' : ''} ${shine ? 'tile-dora' : ''}`}>
-            <img className="tile-img" src={TILE_URLS.Front} alt="" />
-            <img className="tile-img tile-face" src={faceUrl(tile)} alt={tileLabel(tile)} />
+            <img
+                className="tile-img"
+                src={TILE_URLS.Front}
+                alt=""
+                loading="lazy"
+                decoding="async"
+            />
+            <img
+                className="tile-img tile-face"
+                src={faceUrl(tile)}
+                alt={tileLabel(tile)}
+                loading="lazy"
+                decoding="async"
+            />
         </div>
     );
 }

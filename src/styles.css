@@ -150,10 +150,6 @@ body {
     background: var(--bg-deep);
 }
 
-.badge-win {
-    font-weight: 700;
-}
-
 .b-tsumo {
     background: rgba(75, 224, 160, 0.12);
     color: var(--tsumo);
@@ -164,10 +160,6 @@ body {
     background: rgba(255, 110, 169, 0.12);
     color: var(--ron);
     border-color: var(--ron);
-}
-
-.badge-seat {
-    font-weight: 700;
 }
 
 .b-dealer {

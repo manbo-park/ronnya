@@ -13,11 +13,17 @@ export function ScoreTrainer() {
     const [gp, setGp] = useState<GeneratedProblem>(() => generateProblem());
     const [phase, setPhase] = useState<Phase>('challenge');
     const [answer, setAnswer] = useState('');
+    // 정답 보기로 넘어온 경우: 채점(정답/오답) 대신 중립 표시
+    const [revealed, setRevealed] = useState(false);
+    // 문제마다 손패 영역을 리마운트해 모든 도라패의 광택 애니메이션을 같은 프레임에 시작시킨다
+    const [round, setRound] = useState(0);
 
     const next = useCallback(() => {
         setGp(generateProblem());
         setAnswer('');
+        setRevealed(false);
         setPhase('challenge');
+        setRound((n) => n + 1);
     }, []);
 
     const p = gp.problem;
@@ -30,7 +36,14 @@ export function ScoreTrainer() {
     const doraIds = new Set(p.doraIndicators.map((t) => nextDoraId(tileId(t))));
     const isDora = (t: Tile) => doraIds.has(tileId(t));
 
-    const submit = () => setPhase('answer');
+    const submit = () => {
+        setRevealed(false);
+        setPhase('answer');
+    };
+    const reveal = () => {
+        setRevealed(true);
+        setPhase('answer');
+    };
 
     return (
         <div className="trainer">
@@ -48,24 +61,27 @@ export function ScoreTrainer() {
                 </div>
 
                 <div className="dora-row">
-                    <span className="row-label">장풍</span>
+                    <span className="row-label">장풍패</span>
                     <TileView tile={{ suit: 'z', rank: p.roundWind }} />
-                    <span className="row-label">자풍</span>
+                    <span className="row-label">자풍패</span>
                     <TileView tile={{ suit: 'z', rank: p.seatWind }} />
                 </div>
 
                 <div className="dora-row">
-                    <span className="row-label">왕패</span>
-                    {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
-                        i < p.doraIndicators.length ? (
-                            <TileView key={i} tile={p.doraIndicators[i]} />
-                        ) : (
-                            <TileView key={i} back />
-                        ),
-                    )}
+                    <span className="row-label">도라표시패</span>
+                    <div className="tile-group">
+                        {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
+                            i < p.doraIndicators.length ? (
+                                <TileView key={i} tile={p.doraIndicators[i]} />
+                            ) : (
+                                <TileView key={i} back />
+                            ),
+                        )}
+                    </div>
                 </div>
 
                 <div
+                    key={round}
                     className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'} ${
                         p.melds.length === 0 ? 'hand-menzen' : ''
                     }`}
@@ -87,10 +103,11 @@ export function ScoreTrainer() {
                         answer={answer}
                         setAnswer={setAnswer}
                         onSubmit={submit}
+                        onReveal={reveal}
                         onReset={next}
                     />
                 ) : (
-                    <AnswerView result={r} correct={correct} onNext={next} />
+                    <AnswerView result={r} correct={correct} revealed={revealed} onNext={next} />
                 )}
             </section>
         </div>
@@ -102,12 +119,14 @@ function ChallengeInputs({
     answer,
     setAnswer,
     onSubmit,
+    onReveal,
     onReset,
 }: {
     payment: Payment;
     answer: string;
     setAnswer: (v: string) => void;
     onSubmit: () => void;
+    onReveal: () => void;
     onReset: () => void;
 }) {
     const set = (e: React.ChangeEvent<HTMLInputElement>) => setAnswer(e.target.value);
@@ -159,6 +178,9 @@ function ChallengeInputs({
                 <button className="btn ghost" onClick={onReset}>
                     리셋
                 </button>
+                <button className="btn ghost" onClick={onReveal}>
+                    정답 보기
+                </button>
                 <button className="btn primary" onClick={onSubmit} disabled={!filled}>
                     확인
                 </button>
@@ -184,20 +206,32 @@ function paymentText(pm: Payment): string {
 function AnswerView({
     result: r,
     correct,
+    revealed,
     onNext,
 }: {
     result: ScoringResult;
     correct: boolean;
+    revealed: boolean;
     onNext: () => void;
 }) {
+    // 5판 이상(만관 이상)은 부수가 점수에 무의미하므로 부수 표기를 숨긴다
+    const showFu = r.yakumanUnits === 0 && r.han < 5;
     const headline =
         r.yakumanUnits > 0
             ? r.limitName
-            : `${r.han}판 ${r.fu}부` + (r.limitName ? ` · ${r.limitName}` : '');
+            : `${r.han}판` +
+              (showFu ? ` ${r.fu}부` : '') +
+              (r.limitName ? ` · ${r.limitName}` : '');
 
     return (
         <div className="answer">
-            <div className={`verdict ${correct ? 'ok' : 'no'}`}>{correct ? '정답!' : '오답'}</div>
+            {revealed ? (
+                <div className="verdict reveal">정답 보기</div>
+            ) : (
+                <div className={`verdict ${correct ? 'ok' : 'no'}`}>
+                    {correct ? '정답!' : '오답'}
+                </div>
+            )}
 
             <div className="plaque">
                 <div className="plaque-main">{headline}</div>
@@ -205,7 +239,7 @@ function AnswerView({
             </div>
 
             <table className="detail-table">
-                <caption>역</caption>
+                <caption>판</caption>
                 <tbody>
                     {r.yaku.map((y, i) => (
                         <tr key={i} className={y.isDora ? 'dora-row-y' : ''}>
@@ -224,12 +258,12 @@ function AnswerView({
                 </tbody>
             </table>
 
-            {r.yakumanUnits === 0 && (
+            {showFu && (
                 <table className="detail-table">
-                    <caption>부수 계산</caption>
+                    <caption>부수</caption>
                     <tbody>
                         {r.fuDetails.map((d, i) => (
-                            <tr key={i}>
+                            <tr key={i} className={d.dim ? 'dim-row' : ''}>
                                 <td>{d.reason}</td>
                                 <td className="num-cell">{d.fu > 0 ? `${d.fu}부` : '—'}</td>
                             </tr>

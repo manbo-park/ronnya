@@ -12,7 +12,7 @@
     --vermilion: #e2543a;
     --jade: #5fc28f;
     /* 멘젠 13장 그룹이 한 줄에 들어가는 크기 */
-    --tile-w: clamp(16px, 5.6vw, 30px);
+    --tile-w: clamp(18px, 6.4vw, 34px);
 }
 
 * {
@@ -173,6 +173,9 @@ body {
     border-radius: 6px;
     padding: 3px 7px 3px 9px; /* letter-spacing이 만드는 우측 잉여 보정 */
     margin-right: 4px;
+    /* 모든 라벨 폭을 가장 긴 '도라표시패' 기준으로 통일해 각 행 첫 패의 세로 정렬을 맞춘다 */
+    min-width: 84px;
+    text-align: center;
 }
 
 .dora-row .row-label:not(:first-child) {
@@ -266,22 +269,29 @@ body {
     margin-bottom: 14px;
 }
 
-/* 한 그룹(손패/멘쯔) 안에서는 줄이 나뉘지 않는다 */
+/* 한 그룹(손패/멘쯔) 안에서는 줄이 나뉘지 않고, 패끼리 거의 붙는다 */
 .hand-tiles {
     display: flex;
     align-items: flex-end;
-    gap: 2px;
+    gap: 1px;
+}
+
+/* 왕패 등 같은 그룹의 패 묶음 */
+.tile-group {
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
 }
 
 /* 멘젠: 손패 13장 + 오름패가 한 줄에 들어가도록 패 폭 축소 */
 .hand-menzen {
-    --tile-w: clamp(15px, 5.2vw, 27px);
+    --tile-w: clamp(16px, 5.4vw, 28px);
 }
 
 .meld-tiles {
     display: flex;
     align-items: flex-end;
-    gap: 2px;
+    gap: 1px;
 }
 
 /* 눕힌 패: 세로 패를 90° 돌려 가로 박스에 담는다 */
@@ -409,6 +419,14 @@ body {
     color: var(--vermilion);
 }
 
+/* 정답 보기로 펼친 경우: 정오 판정이 아닌 중립 표시 */
+.verdict.reveal {
+    color: var(--brass);
+    font-size: 16px;
+    letter-spacing: 0.14em;
+    opacity: 0.85;
+}
+
 /* 시그니처: 점수 명판 */
 .plaque {
     text-align: center;
@@ -470,6 +488,11 @@ body {
 }
 
 .dora-row-y td {
+    color: var(--muted);
+}
+
+/* 역이 아닌 보정성 부수 항목(10부 단위 절상 등)은 적도라처럼 약하게 */
+.dim-row td {
     color: var(--muted);
 }
 

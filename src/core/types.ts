@@ -56,6 +56,8 @@ export interface YakuItem {
 export interface FuItem {
     reason: string;
     fu: number;
+    /** 역이 아닌 보정성 항목(예: 10부 단위 절상)은 약하게 표시 */
+    dim?: boolean;
 }
 
 export type Payment =

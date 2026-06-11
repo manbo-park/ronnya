@@ -396,7 +396,7 @@ function computeFu(it: Interp, p: Problem, menzen: boolean): { fu: number; fuDet
         return { fu: 25, fuDetails: [{ reason: '치또이츠 (고정)', fu: 25 }] };
     }
 
-    const details: FuItem[] = [{ reason: '기본부', fu: 20 }];
+    const details: FuItem[] = [{ reason: '부저', fu: 20 }];
     const pinfu =
         p.melds.length === 0 &&
         it.sets.every((s) => s.kind === 'run') &&
@@ -457,7 +457,7 @@ function computeFu(it: Interp, p: Problem, menzen: boolean): { fu: number; fuDet
     }
 
     const fu = Math.ceil(raw / 10) * 10;
-    if (fu !== raw) details.push({ reason: '10부 단위 절상', fu: fu - raw });
+    if (fu !== raw) details.push({ reason: '10부 단위 절상', fu: fu - raw, dim: true });
     return { fu, fuDetails: details };
 }
 

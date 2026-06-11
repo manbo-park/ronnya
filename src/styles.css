@@ -473,6 +473,11 @@ body {
     color: var(--muted);
 }
 
+/* 역이 아닌 보정성 부수 항목(10부 단위 절상 등)은 적도라처럼 약하게 */
+.dim-row td {
+    color: var(--muted);
+}
+
 /* ---- 메인 메뉴 ---- */
 .menu-grid {
     display: grid;

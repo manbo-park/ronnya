@@ -190,10 +190,14 @@ function AnswerView({
     correct: boolean;
     onNext: () => void;
 }) {
+    // 5판 이상(만관 이상)은 부수가 점수에 무의미하므로 부수 표기를 숨긴다
+    const showFu = r.yakumanUnits === 0 && r.han < 5;
     const headline =
         r.yakumanUnits > 0
             ? r.limitName
-            : `${r.han}판 ${r.fu}부` + (r.limitName ? ` · ${r.limitName}` : '');
+            : `${r.han}판` +
+              (showFu ? ` ${r.fu}부` : '') +
+              (r.limitName ? ` · ${r.limitName}` : '');
 
     return (
         <div className="answer">
@@ -205,7 +209,7 @@ function AnswerView({
             </div>
 
             <table className="detail-table">
-                <caption>역</caption>
+                <caption>판</caption>
                 <tbody>
                     {r.yaku.map((y, i) => (
                         <tr key={i} className={y.isDora ? 'dora-row-y' : ''}>
@@ -224,12 +228,12 @@ function AnswerView({
                 </tbody>
             </table>
 
-            {r.yakumanUnits === 0 && (
+            {showFu && (
                 <table className="detail-table">
-                    <caption>부수 계산</caption>
+                    <caption>부수</caption>
                     <tbody>
                         {r.fuDetails.map((d, i) => (
-                            <tr key={i}>
+                            <tr key={i} className={d.dim ? 'dim-row' : ''}>
                                 <td>{d.reason}</td>
                                 <td className="num-cell">{d.fu > 0 ? `${d.fu}부` : '—'}</td>
                             </tr>

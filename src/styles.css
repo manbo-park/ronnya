@@ -623,20 +623,30 @@ body {
     outline-offset: 1px;
 }
 
-/* 기본(20~60부)은 가로 스크롤 없이 한 화면에 들어가도록 고정 레이아웃 */
+/* 펼침/접힘 모두 동일한 고정 레이아웃 + 컨테이너 기준 열 너비로 통일 */
 .st-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     border-radius: 10px;
+    container-type: inline-size; /* cqw = 스크롤 컨테이너 너비의 1% (펼침/접힘 무관 동일) */
 }
 
 .st-table {
-    width: 100%;
+    width: 100%; /* cqw 미지원 시 폴백 */
     table-layout: fixed;
     border-collapse: collapse;
     font-variant-numeric: tabular-nums;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+}
+
+/* 열 너비를 컨테이너 기준으로 고정 → 70부 이상은 오른쪽에 덧붙고 기존 열은 그대로 */
+.st-col-label {
+    width: 13cqw;
+}
+
+.st-col-fu {
+    width: 14.5cqw;
 }
 
 .st-table th,
@@ -655,10 +665,9 @@ body {
     font-weight: 700;
 }
 
-/* 판 라벨(첫 열)은 약간 좁게 고정 */
+/* 판 라벨(첫 열) 스타일 (너비는 colgroup이 제어) */
 .st-corner,
 .st-han {
-    width: 13%;
     color: var(--brass);
     background: rgba(216, 180, 90, 0.06);
     font-weight: 700;
@@ -702,25 +711,6 @@ body {
 
 .st-limit .st-tsumo {
     font-size: 10px;
-}
-
-/* 70부 이상 확장 시: 내용 폭만큼 늘려 가로 스크롤 허용 */
-.st-table.expanded {
-    table-layout: auto;
-    width: auto;
-    min-width: 100%;
-}
-
-.st-table.expanded th,
-.st-table.expanded td {
-    min-width: 58px;
-    padding: 5px 6px;
-}
-
-.st-table.expanded .st-corner,
-.st-table.expanded .st-han {
-    width: auto;
-    min-width: 46px;
 }
 
 /* 론/쯔모 범례 */

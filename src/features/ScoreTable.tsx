@@ -84,7 +84,16 @@ export function ScoreTable() {
             </p>
 
             <div className="st-scroll">
-                <table className={`st-table ${expanded ? 'expanded' : ''}`}>
+                <table
+                    className={`st-table ${expanded ? 'expanded' : ''}`}
+                    style={{ width: `calc(13cqw + ${visibleFu.length} * 14.5cqw)` }}
+                >
+                    <colgroup>
+                        <col className="st-col-label" />
+                        {visibleFu.map((fu) => (
+                            <col key={fu} className="st-col-fu" />
+                        ))}
+                    </colgroup>
                     <thead>
                         <tr>
                             <th className="st-corner" />

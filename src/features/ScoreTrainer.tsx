@@ -177,6 +177,8 @@ function ChallengeInputs({
 
     const othersRef = useRef<HTMLInputElement>(null);
     const dealerPayRef = useRef<HTMLInputElement>(null);
+    // 론·친 쯔모의 단일 입력 필드 (둘은 동시에 렌더링되지 않아 ref 하나를 공유)
+    const singleRef = useRef<HTMLInputElement>(null);
 
     // 자 지불은 대부분 4자리 이하라, 4자리가 되는 순간 친 지불로 포커스를 넘겨
     // 두 번째 필드 터치를 생략한다. 5자리(더블 역만 16000)는 매우 드물어
@@ -195,6 +197,52 @@ function ChallengeInputs({
     const filled =
         payment.kind === 'tsumoNonDealer' ? NON_DEALER_TSUMO_RE.test(answer.trim()) : answer !== '';
 
+    // 키보드 단축키 (#25): Enter/Space 확인, R 리셋, A 정답 보기, 1~9 첫 필드 입력.
+    // 매 렌더의 최신 상태(answer·filled 등)를 그대로 쓰기 위해 의존성 배열 없이 재구독한다.
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+            // 포커스된 버튼은 Enter/Space가 네이티브 클릭으로 동작하므로 그대로 둔다
+            if (e.target instanceof HTMLButtonElement) return;
+            const inInput = e.target instanceof HTMLInputElement;
+
+            if (e.key === 'Enter' || e.key === ' ') {
+                // Space 기본 동작 차단: 페이지 스크롤, 채점 형식을 깨는 필드 공백 입력 방지
+                e.preventDefault();
+                if (filled) onSubmit();
+                return;
+            }
+
+            // 글자·숫자 단축키는 필드 입력 중에는 무시한다
+            if (inInput) return;
+
+            // e.code(물리 키) 기준이라 한글 자판(ㄱ=R, ㅁ=A)도 함께 처리된다
+            if (e.code === 'KeyR') {
+                onReset();
+                return;
+            }
+            if (e.code === 'KeyA') {
+                onReveal();
+                return;
+            }
+
+            // 1~9(0 제외): 첫 번째 필드에 이어 붙이고 포커스를 옮긴다
+            if (/^[1-9]$/.test(e.key)) {
+                e.preventDefault();
+                if (payment.kind === 'tsumoNonDealer') {
+                    othersRef.current?.focus();
+                    // 4자리가 되면 setOthers의 기존 규칙대로 친 지불로 포커스가 넘어간다
+                    setOthers(others + e.key);
+                } else {
+                    singleRef.current?.focus();
+                    setAnswer(answer + e.key);
+                }
+            }
+        };
+        document.addEventListener('keydown', onKeyDown);
+        return () => document.removeEventListener('keydown', onKeyDown);
+    });
+
     return (
         <div className="inputs">
             <div className="field-row">
@@ -202,6 +250,7 @@ function ChallengeInputs({
                     <label className="field grow">
                         <span>론 점수 (지불 총액)</span>
                         <input
+                            ref={singleRef}
                             inputMode="numeric"
                             pattern="[0-9]*"
                             value={answer}
@@ -214,6 +263,7 @@ function ChallengeInputs({
                     <label className="field grow">
                         <span>친 쯔모 (1명당 지불)</span>
                         <input
+                            ref={singleRef}
                             inputMode="numeric"
                             pattern="[0-9]*"
                             value={answer}
@@ -291,6 +341,21 @@ function AnswerView({
     revealed: boolean;
     onNext: () => void;
 }) {
+    // 키보드 단축키 (#25): Enter/Space 다음 문제, R 리셋(해답 화면에서는 다음 문제와 동일).
+    // 확인 직후 Enter를 계속 누르고 있어도 넘어가지 않도록 자동 반복(repeat)은 무시한다.
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+            if (e.target instanceof HTMLButtonElement) return;
+            if (e.key === 'Enter' || e.key === ' ' || e.code === 'KeyR') {
+                e.preventDefault();
+                onNext();
+            }
+        };
+        document.addEventListener('keydown', onKeyDown);
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, [onNext]);
+
     // 5판 이상(만관 이상)은 부수가 점수에 무의미하므로 부수 표기를 숨긴다
     const showFu = r.yakumanUnits === 0 && r.han < 5;
     const headline =

@@ -637,9 +637,9 @@ body {
 .st-table th,
 .st-table td {
     border: 1px solid rgba(237, 231, 210, 0.14);
-    padding: 5px 2px;
+    padding: 5px 1px;
     text-align: center;
-    font-size: clamp(10px, 2.7vw, 13px);
+    font-size: clamp(9px, 2.5vw, 12px);
     white-space: nowrap;
     overflow: hidden;
 }
@@ -672,7 +672,8 @@ body {
 
 .st-tsumo {
     color: var(--jade);
-    font-size: 0.9em;
+    font-size: 0.8em;
+    letter-spacing: -0.02em;
 }
 
 /* 만관 이상·계단형 병합 칸: 명칭만 표시 */

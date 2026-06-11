@@ -49,7 +49,7 @@ describe('앱 스모크 테스트', () => {
         // 론/쯔모 2줄 표기 유지
         expect(html).toContain('st-ron');
         expect(html).toContain('st-tsumo');
-        // 자 4판 30부 론 = 7700
+        // 자 4판 30부 론 = 7,700
         expect(html).toContain('7,700');
         // 만관 이상은 명칭만
         expect(html).toContain('만관');

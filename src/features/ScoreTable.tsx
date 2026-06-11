@@ -12,7 +12,7 @@ const LIMIT_GROUPS: { labels: string[]; name: string }[] = [
     { labels: ['6판', '7판'], name: '하네만' },
     { labels: ['8판', '9판', '10판'], name: '배만' },
     { labels: ['11판', '12판'], name: '삼배만' },
-    { labels: ['13판 이상'], name: '헤아림 역만' },
+    { labels: ['+13판'], name: '헤아림 역만' },
 ];
 
 const fmt = (n: number) => n.toLocaleString('ko-KR');

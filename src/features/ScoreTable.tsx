@@ -7,12 +7,12 @@ const FU_EXT = [70, 80, 90, 100, 110];
 const HAN_ROWS = [1, 2, 3, 4];
 
 // 만관 이상은 점수 없이 명칭만 표시. 판수 구간별로 행을 묶는다.
-const LIMIT_GROUPS: { labels: string[]; name: string }[] = [
-    { labels: ['5판'], name: '만관' },
-    { labels: ['6판', '7판'], name: '하네만' },
-    { labels: ['8판', '9판', '10판'], name: '배만' },
-    { labels: ['11판', '12판'], name: '삼배만' },
-    { labels: ['+13판'], name: '헤아림 역만' },
+const LIMIT_GROUPS: { labels: string[]; name: string; han: number }[] = [
+    { labels: ['5판'], name: '만관', han: 5 },
+    { labels: ['6판', '7판'], name: '하네만', han: 6 },
+    { labels: ['8판', '9판', '10판'], name: '배만', han: 8 },
+    { labels: ['11판', '12판'], name: '삼배만', han: 11 },
+    { labels: ['+13판'], name: '헤아림 역만', han: 13 },
 ];
 
 const fmt = (n: number) => n.toLocaleString('ko-KR');
@@ -37,6 +37,17 @@ function tsumoText(han: number, fu: number, dealer: boolean): string {
     if (pm.kind === 'tsumoDealer') return `${fmt(pm.each)} 올`;
     if (pm.kind === 'tsumoNonDealer') return `${fmt(pm.others)}/${fmt(pm.dealer)}`;
     return '—';
+}
+
+// 만관 이상 칸: 명칭 + 론/쯔모 점수 (부수는 무의미하므로 30부로 계산)
+function LimitCell({ name, han, dealer }: { name: string; han: number; dealer: boolean }) {
+    return (
+        <>
+            <span className="st-limit-name">{name}</span>
+            <span className="st-ron">{ronText(han, 30, dealer)}</span>
+            <span className="st-tsumo">{tsumoText(han, 30, dealer)}</span>
+        </>
+    );
 }
 
 export function ScoreTable() {
@@ -105,7 +116,7 @@ export function ScoreTable() {
                                             className="st-limit"
                                             colSpan={visibleFu.length - valueCount}
                                         >
-                                            만관
+                                            <LimitCell name="만관" han={5} dealer={dealer} />
                                         </td>
                                     )}
                                 </tr>
@@ -122,7 +133,7 @@ export function ScoreTable() {
                                             rowSpan={g.labels.length}
                                             colSpan={visibleFu.length}
                                         >
-                                            {g.name}
+                                            <LimitCell name={g.name} han={g.han} dealer={dealer} />
                                         </td>
                                     )}
                                 </tr>

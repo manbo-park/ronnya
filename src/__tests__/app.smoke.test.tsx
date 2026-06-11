@@ -51,8 +51,9 @@ describe('앱 스모크 테스트', () => {
         expect(html).toContain('st-tsumo');
         // 자 4판 30부 론 = 7,700
         expect(html).toContain('7,700');
-        // 만관 이상은 명칭만
+        // 만관 이상은 명칭 + 론/쯔모 점수 (자 만관 론 = 8,000)
         expect(html).toContain('만관');
+        expect(html).toContain('8,000');
         expect(html).toContain('하네만');
         expect(html).toContain('배만');
         expect(html).toContain('삼배만');

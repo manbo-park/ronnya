@@ -676,12 +676,18 @@ body {
     letter-spacing: -0.02em;
 }
 
-/* 만관 이상·계단형 병합 칸: 명칭만 표시 */
+/* 만관 이상·계단형 병합 칸: 명칭 + 론/쯔모 */
 .st-limit {
     color: var(--brass);
     background: rgba(216, 180, 90, 0.1);
     font-weight: 700;
     letter-spacing: 0.04em;
+}
+
+.st-limit-name {
+    display: block;
+    font-size: 1.15em;
+    margin-bottom: 2px;
 }
 
 /* 70부 이상 확장 시: 내용 폭만큼 늘려 가로 스크롤 허용 */

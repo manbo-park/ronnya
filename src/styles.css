@@ -968,6 +968,37 @@ body {
     animation-delay: 0.2s;
 }
 
+/* 페이지 진입: 점수표 구성 요소(토글 → 범례 → 표 → 펼침 버튼)가 순서대로 떠오른다 */
+.score-table > * {
+    animation: rise-in 0.3s ease-out backwards;
+}
+
+.score-table > :nth-child(2) {
+    animation-delay: 0.06s;
+}
+
+.score-table > :nth-child(3) {
+    animation-delay: 0.12s;
+}
+
+.score-table > :nth-child(4) {
+    animation-delay: 0.18s;
+}
+
+/* 페이지 진입: 역 목록은 판수 그룹 단위로 떠오른다.
+   그룹이 많아 전부 지연하면 뒤쪽이 늦게 보이므로 세 번째 그룹부터는 지연을 고정한다. */
+.yaku-group {
+    animation: rise-in 0.3s ease-out backwards;
+}
+
+.yaku-group:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.yaku-group:nth-child(n + 3) {
+    animation-delay: 0.16s;
+}
+
 /* 상태 변화는 중단 가능하도록 transition으로 처리 */
 .btn,
 .seat-btn,

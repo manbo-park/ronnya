@@ -30,7 +30,7 @@ export function Home() {
     return (
         <>
             <header className="app-header">
-                <h1>richdrill</h1>
+                <h1>ronnya</h1>
             </header>
 
             {GROUPS.map((group) => (

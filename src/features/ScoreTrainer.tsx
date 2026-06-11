@@ -169,6 +169,12 @@ function ChallengeInputs({
 }) {
     const set = (e: React.ChangeEvent<HTMLInputElement>) => setAnswer(e.target.value);
 
+    // 자 쯔모: 한 필드에 공백 구분으로 받으면 숫자 키패드(inputMode=numeric)에
+    // 공백 키가 없어 일반 키보드가 떠야 하므로, 자·친 지불을 별도 필드로 받는다 (#17)
+    // answer에는 기존 채점 형식("자 친")을 그대로 유지한다.
+    const [others = '', dealerPay = ''] = answer.split(' ');
+    const setPair = (o: string, d: string) => setAnswer(o === '' && d === '' ? '' : `${o} ${d}`);
+
     const filled =
         payment.kind === 'tsumoNonDealer' ? NON_DEALER_TSUMO_RE.test(answer.trim()) : answer !== '';
 
@@ -200,15 +206,28 @@ function ChallengeInputs({
                     </label>
                 )}
                 {payment.kind === 'tsumoNonDealer' && (
-                    <label className="field grow">
-                        <span>자 쯔모 (자·친 지불, 띄어서 입력)</span>
-                        <input
-                            pattern="[0-9 ]*"
-                            value={answer}
-                            onChange={set}
-                            placeholder="예: 1000 2000"
-                        />
-                    </label>
+                    <>
+                        <label className="field grow">
+                            <span>자 쯔모 (자 지불)</span>
+                            <input
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={others}
+                                onChange={(e) => setPair(e.target.value, dealerPay)}
+                                placeholder="예: 1000"
+                            />
+                        </label>
+                        <label className="field grow">
+                            <span>자 쯔모 (친 지불)</span>
+                            <input
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={dealerPay}
+                                onChange={(e) => setPair(others, e.target.value)}
+                                placeholder="예: 2000"
+                            />
+                        </label>
+                    </>
                 )}
             </div>
 

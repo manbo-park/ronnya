@@ -23,6 +23,9 @@ html,
 body {
     margin: 0;
     padding: 0;
+    /* 넓은 블록(펼친 점수표 등)에서 모바일 브라우저가 글자를 자동 확대하지 않도록 */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -496,6 +499,38 @@ body {
     color: var(--muted);
 }
 
+/* ---- 로딩 ---- */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    /* 문제 카드와 비슷한 높이를 확보해 전환 시 레이아웃 점프를 줄인다 */
+    min-height: 220px;
+}
+
+.loading-spinner {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 3px solid rgba(216, 180, 90, 0.22);
+    border-top-color: var(--brass);
+    animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* ---- 메인 메뉴 ---- */
 .menu-grid {
     display: grid;
@@ -533,6 +568,283 @@ body {
 .menu-desc {
     font-size: 12px;
     color: var(--muted);
+}
+
+/* 홈 메뉴 그룹 (트레이닝 / 유틸리티) */
+.menu-section + .menu-section {
+    margin-top: 18px;
+}
+
+.menu-section-title {
+    margin: 0 0 8px 2px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--brass-dim);
+}
+
+/* ---- 점수표 ---- */
+.score-table {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.seat-toggle {
+    display: flex;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(237, 231, 210, 0.18);
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.seat-btn {
+    flex: 1;
+    padding: 9px 0;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.seat-btn.active {
+    background: linear-gradient(180deg, #e6c46a, var(--brass));
+    color: #2a230f;
+    box-shadow: 0 2px 0 #7d6731;
+}
+
+.seat-btn:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 1px;
+}
+
+/* 펼침/접힘 모두 동일한 고정 레이아웃 + 컨테이너 기준 열 너비로 통일 */
+.st-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    container-type: inline-size; /* cqw = 스크롤 컨테이너 너비의 1% (펼침/접힘 무관 동일) */
+}
+
+.st-table {
+    width: 100%; /* cqw 미지원 시 폴백 */
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* 열 너비를 컨테이너 기준으로 고정 → 70부 이상은 오른쪽에 덧붙고 기존 열은 그대로 */
+.st-col-label {
+    width: 13cqw;
+}
+
+.st-col-fu {
+    width: 14.5cqw;
+}
+
+.st-table th,
+.st-table td {
+    border: 1px solid rgba(237, 231, 210, 0.14);
+    padding: 5px 1px;
+    text-align: center;
+    font-size: clamp(9px, 2.5vw, 12px);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.st-table thead th {
+    color: var(--brass);
+    background: rgba(216, 180, 90, 0.08);
+    font-weight: 700;
+}
+
+/* 판 라벨(첫 열) 스타일 (너비는 colgroup이 제어) */
+.st-corner,
+.st-han {
+    color: var(--brass);
+    background: rgba(216, 180, 90, 0.06);
+    font-weight: 700;
+}
+
+/* 각 칸: 윗줄 론 / 아랫줄 쯔모 */
+.st-ron,
+.st-tsumo {
+    display: block;
+    line-height: 1.4;
+}
+
+.st-ron {
+    color: #f3a8c8;
+}
+
+.st-tsumo {
+    color: var(--jade);
+    font-size: 0.8em;
+    letter-spacing: -0.02em;
+}
+
+/* 만관 이상·계단형 병합 칸: 명칭 + 론/쯔모 */
+.st-limit {
+    color: var(--brass);
+    background: rgba(216, 180, 90, 0.1);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+/* 만관 이상 칸은 펼침/접힘(table-layout 변화)과 무관하게 고정 크기로 통일 */
+.st-limit-name {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.st-limit .st-ron {
+    font-size: 11px;
+}
+
+.st-limit .st-tsumo {
+    font-size: 10px;
+}
+
+/* 론/쯔모 범례 */
+.st-legend {
+    margin: 0;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.st-legend .lg-ron {
+    color: #f3a8c8;
+    font-weight: 700;
+}
+
+.st-legend .lg-tsumo {
+    color: var(--jade);
+    font-weight: 700;
+}
+
+/* 70부 이상 보기/접기 버튼 */
+.fu-toggle {
+    align-self: center;
+    padding: 8px 16px;
+    border-radius: 9px;
+    border: 1px solid rgba(237, 231, 210, 0.25);
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fu-toggle:active {
+    transform: translateY(1px);
+}
+
+.fu-toggle:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 1px;
+}
+
+/* ---- 역 목록 ---- */
+.yaku-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.yaku-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.yaku-group-title {
+    margin: 0 0 2px 2px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--brass-dim);
+}
+
+.yaku-card {
+    background: linear-gradient(180deg, var(--panel), #0d3828);
+    border: 1px solid var(--panel-edge);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.yaku-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.yaku-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.yaku-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.ytag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid rgba(237, 231, 210, 0.22);
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.ytag-han {
+    color: var(--brass);
+    border-color: rgba(216, 180, 90, 0.45);
+    background: rgba(216, 180, 90, 0.12);
+}
+
+.ytag-closed {
+    color: #8fb4e8;
+    border-color: rgba(91, 139, 214, 0.5);
+    background: rgba(91, 139, 214, 0.14);
+}
+
+.ytag-open {
+    color: #f0907c;
+    border-color: rgba(226, 84, 58, 0.5);
+    background: rgba(226, 84, 58, 0.14);
+}
+
+.yaku-desc {
+    margin: 8px 0 10px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+/* 예시 패: 한 줄에 여러 장이 들어가도록 작게 */
+.yaku-example {
+    --tile-w: clamp(14px, 4.6vw, 22px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1px;
+    row-gap: 4px;
 }
 
 /* ---- 기타 ---- */

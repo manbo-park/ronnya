@@ -69,66 +69,73 @@ export function ScoreTrainer() {
                 {phase !== 'loading' && (
                     <>
                         <div className="badges">
-                    <span className={`badge badge-seat ${dealer ? 'b-dealer' : 'b-nondealer'}`}>
-                        {dealer ? '친' : '자'}
-                    </span>
-                    {p.riichi === 2 && <span className="badge b-riichi">더블리치</span>}
-                    {p.riichi === 1 && <span className="badge b-riichi">리치</span>}
-                    {p.ippatsu && <span className="badge b-riichi">일발</span>}
-                    <span className={`badge badge-win ${tsumo ? 'b-tsumo' : 'b-ron'}`}>
-                        {tsumo ? '쯔모' : '론'}
-                    </span>
-                </div>
+                            <span
+                                className={`badge badge-seat ${dealer ? 'b-dealer' : 'b-nondealer'}`}
+                            >
+                                {dealer ? '친' : '자'}
+                            </span>
+                            {p.riichi === 2 && <span className="badge b-riichi">더블리치</span>}
+                            {p.riichi === 1 && <span className="badge b-riichi">리치</span>}
+                            {p.ippatsu && <span className="badge b-riichi">일발</span>}
+                            <span className={`badge badge-win ${tsumo ? 'b-tsumo' : 'b-ron'}`}>
+                                {tsumo ? '쯔모' : '론'}
+                            </span>
+                        </div>
 
-                <div className="dora-row">
-                    <span className="row-label">장풍패</span>
-                    <TileView tile={{ suit: 'z', rank: p.roundWind }} />
-                    <span className="row-label">자풍패</span>
-                    <TileView tile={{ suit: 'z', rank: p.seatWind }} />
-                </div>
+                        <div className="dora-row">
+                            <span className="row-label">장풍패</span>
+                            <TileView tile={{ suit: 'z', rank: p.roundWind }} />
+                            <span className="row-label">자풍패</span>
+                            <TileView tile={{ suit: 'z', rank: p.seatWind }} />
+                        </div>
 
-                <div className="dora-row">
-                    <span className="row-label">도라표시패</span>
-                    <div className="tile-group">
-                        {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
-                            i < p.doraIndicators.length ? (
-                                <TileView key={i} tile={p.doraIndicators[i]} />
-                            ) : (
-                                <TileView key={i} back />
-                            ),
+                        <div className="dora-row">
+                            <span className="row-label">도라표시패</span>
+                            <div className="tile-group">
+                                {Array.from({ length: DORA_INDICATOR_SLOTS }, (_, i) =>
+                                    i < p.doraIndicators.length ? (
+                                        <TileView key={i} tile={p.doraIndicators[i]} />
+                                    ) : (
+                                        <TileView key={i} back />
+                                    ),
+                                )}
+                            </div>
+                        </div>
+
+                        <div
+                            key={round}
+                            className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'} ${
+                                p.melds.length === 0 ? 'hand-menzen' : ''
+                            }`}
+                        >
+                            <div className="hand-tiles">
+                                {p.hand.map((t, i) => (
+                                    <TileView key={i} tile={t} dora={isDora(t)} />
+                                ))}
+                            </div>
+                            {p.melds.map((m, i) => (
+                                <MeldView key={i} meld={m} isDora={isDora} />
+                            ))}
+                            <TileView tile={p.winningTile} win dora={isDora(p.winningTile)} />
+                        </div>
+
+                        {phase === 'challenge' ? (
+                            <ChallengeInputs
+                                payment={r.payment}
+                                answer={answer}
+                                setAnswer={setAnswer}
+                                onSubmit={submit}
+                                onReveal={reveal}
+                                onReset={next}
+                            />
+                        ) : (
+                            <AnswerView
+                                result={r}
+                                correct={correct}
+                                revealed={revealed}
+                                onNext={next}
+                            />
                         )}
-                    </div>
-                </div>
-
-                <div
-                    key={round}
-                    className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'} ${
-                        p.melds.length === 0 ? 'hand-menzen' : ''
-                    }`}
-                >
-                    <div className="hand-tiles">
-                        {p.hand.map((t, i) => (
-                            <TileView key={i} tile={t} dora={isDora(t)} />
-                        ))}
-                    </div>
-                    {p.melds.map((m, i) => (
-                        <MeldView key={i} meld={m} isDora={isDora} />
-                    ))}
-                    <TileView tile={p.winningTile} win dora={isDora(p.winningTile)} />
-                </div>
-
-                {phase === 'challenge' ? (
-                    <ChallengeInputs
-                        payment={r.payment}
-                        answer={answer}
-                        setAnswer={setAnswer}
-                        onSubmit={submit}
-                        onReveal={reveal}
-                        onReset={next}
-                    />
-                ) : (
-                    <AnswerView result={r} correct={correct} revealed={revealed} onNext={next} />
-                )}
                     </>
                 )}
             </section>

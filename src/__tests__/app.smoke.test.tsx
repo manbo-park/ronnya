@@ -25,5 +25,6 @@ describe('앱 스모크 테스트', () => {
         expect(html).toContain('왕패');
         expect(html).toContain('장풍');
         expect(html).toContain('확인');
+        expect(html).toContain('정답 보기');
     });
 });

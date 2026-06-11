@@ -416,6 +416,14 @@ body {
     color: var(--vermilion);
 }
 
+/* 정답 보기로 펼친 경우: 정오 판정이 아닌 중립 표시 */
+.verdict.reveal {
+    color: var(--brass);
+    font-size: 16px;
+    letter-spacing: 0.14em;
+    opacity: 0.85;
+}
+
 /* 시그니처: 점수 명판 */
 .plaque {
     text-align: center;

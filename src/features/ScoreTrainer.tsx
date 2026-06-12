@@ -360,7 +360,7 @@ function gradeAnswer(r: ScoringResult, answer: string): boolean {
 
 function paymentText(pm: Payment): string {
     const f = (n: number) => n.toLocaleString('ko-KR');
-    if (pm.kind === 'ron') return `${f(pm.total)}점`;
+    if (pm.kind === 'ron') return `${f(pm.total)}`;
     if (pm.kind === 'tsumoDealer') return `${f(pm.each)} 올`;
     return `${f(pm.others)} / ${f(pm.dealer)}`;
 }

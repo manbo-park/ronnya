@@ -1,47 +1,74 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { generateProblem, type GeneratedProblem } from '../core/generator';
 import { nextDoraId, tileId } from '../core/tiles';
-import type { Payment, ScoringResult, Tile } from '../core/types';
-import { MeldView, TileView } from '../components/Tiles';
+import type { Payment, Problem, ScoringResult, Tile } from '../core/types';
+import { MeldView, TileView, preloadTileImages } from '../components/Tiles';
 
 type Phase = 'challenge' | 'answer' | 'loading';
 
 const DORA_INDICATOR_SLOTS = 5; // 왕패의 도라표시패 자리 수
 const NON_DEALER_TSUMO_RE = /^\d+\s+\d+$/;
-// 리셋·다음 문제 시 새 문제를 공개하기 전 로딩 UI를 보여주는 시간
+// 문제를 공개하기 전 로딩 UI를 보여주는 최소 시간
 const LOADING_MS = 480;
+// 패 이미지 프리로드가 늦어져도 이 시간이 지나면 문제를 공개한다
+const LOADING_MAX_MS = 3000;
+
+/** 문제 화면에 표시되는 모든 패 (이미지 프리로드용) */
+function problemTiles(p: Problem): Tile[] {
+    return [
+        { suit: 'z', rank: p.roundWind },
+        { suit: 'z', rank: p.seatWind },
+        ...p.doraIndicators,
+        ...p.hand,
+        ...p.melds.flatMap((m) => m.tiles),
+        p.winningTile,
+    ];
+}
 
 export function ScoreTrainer() {
     const [gp, setGp] = useState<GeneratedProblem>(() => generateProblem());
-    const [phase, setPhase] = useState<Phase>('challenge');
+    // 최초 진입 시에도 패 이미지가 준비되기 전에 문제가 노출되지 않도록 로딩으로 시작한다 (#32)
+    const [phase, setPhase] = useState<Phase>('loading');
     const [answer, setAnswer] = useState('');
     // 정답 보기로 넘어온 경우: 채점(정답/오답) 대신 중립 표시
     const [revealed, setRevealed] = useState(false);
     // 문제마다 손패 영역을 리마운트해 모든 도라패의 광택 애니메이션을 같은 프레임에 시작시킨다
     const [round, setRound] = useState(0);
-    // 로딩 표시 후 새 문제를 공개하기 위한 타이머
-    const loadTimer = useRef<number | null>(null);
+    // 진행 중인 로딩 식별자 — 새 로딩이 시작되거나 언마운트되면 이전 로딩의 공개를 무효화한다
+    const loadSeq = useRef(0);
 
     useEffect(
         () => () => {
-            if (loadTimer.current !== null) window.clearTimeout(loadTimer.current);
+            loadSeq.current++;
         },
         [],
     );
 
-    const next = useCallback(() => {
-        // 먼저 로딩 UI를 노출하고, 짧은 텀 뒤에 새 문제로 교체한다
+    // 로딩 UI를 최소 LOADING_MS 동안 보여주면서 패 이미지를 미리 받은 뒤 문제를 공개한다
+    const revealAfterLoading = useCallback((nextGp: GeneratedProblem) => {
         setPhase('loading');
-        if (loadTimer.current !== null) window.clearTimeout(loadTimer.current);
-        loadTimer.current = window.setTimeout(() => {
-            setGp(generateProblem());
+        const seq = ++loadSeq.current;
+        const delay = (ms: number) => new Promise((res) => window.setTimeout(res, ms));
+        Promise.all([
+            Promise.race([preloadTileImages(problemTiles(nextGp.problem)), delay(LOADING_MAX_MS)]),
+            delay(LOADING_MS),
+        ]).then(() => {
+            if (seq !== loadSeq.current) return;
+            setGp(nextGp);
             setAnswer('');
             setRevealed(false);
             setPhase('challenge');
             setRound((n) => n + 1);
-            loadTimer.current = null;
-        }, LOADING_MS);
+        });
     }, []);
+
+    const next = useCallback(() => revealAfterLoading(generateProblem()), [revealAfterLoading]);
+
+    // 최초 진입: 이미 생성된 문제를 리셋과 동일한 로딩 절차로 공개한다 (#32)
+    const initialGp = useRef(gp);
+    useEffect(() => {
+        revealAfterLoading(initialGp.current);
+    }, [revealAfterLoading]);
 
     const p = gp.problem;
     const r = gp.result;
@@ -155,7 +182,7 @@ function LoadingView() {
     return (
         <div className="loading" role="status" aria-live="polite">
             <span className="loading-spinner" aria-hidden="true" />
-            <span className="loading-text">다음 문제 준비 중…</span>
+            <span className="loading-text">문제 준비 중…</span>
         </div>
     );
 }

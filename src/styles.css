@@ -13,6 +13,8 @@
     --pop-shade: #8f7414;
     --ron: #ff6ea9;
     --tsumo: #4be0a0;
+    /* 삼원패 백(白) — 타이틀 구분선용 흰색 (#44) */
+    --haku: #f5f7ff;
     --alert: #ff5d49;
     --info: #6ea8ff;
     --label: #b49aff;
@@ -130,11 +132,11 @@ body {
     width: 56px;
     height: 4px;
     margin: 10px auto 0;
-    background: var(--pop);
-    /* 양옆에 한 칸씩 끊어진 픽셀 장식 */
+    /* 삼원패(흰색·초록·빨강) 구분선 — 세 선 모두 두께 동일 (#44) */
+    background: var(--tsumo);
     box-shadow:
-        -64px 0 0 -1px var(--ron),
-        64px 0 0 -1px var(--tsumo);
+        -64px 0 0 var(--haku),
+        64px 0 0 var(--ron);
 }
 
 /* ---- 카드 ---- */

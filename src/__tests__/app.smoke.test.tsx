@@ -20,8 +20,10 @@ describe('앱 스모크 테스트', () => {
         // 유틸리티 메뉴
         expect(html).toContain('점수표');
         expect(html).toContain('역 목록');
+        expect(html).toContain('부수 계산법');
         expect(html).toContain('href="/score-table"');
         expect(html).toContain('href="/yaku"');
+        expect(html).toContain('href="/fu"');
         // 유틸리티 그룹은 트레이닝 그룹 아래에 배치
         expect(html.indexOf('트레이닝')).toBeLessThan(html.indexOf('유틸리티'));
     });
@@ -62,6 +64,23 @@ describe('앱 스모크 테스트', () => {
         expect(html).toContain('60부');
         expect(html).not.toContain('110부');
         expect(html).toContain('70부 이상');
+    });
+
+    it('/fu: 부수 계산법 섹션과 절상 안내가 출력된다', () => {
+        const html = renderAt('/fu');
+        expect(html).toContain('부수 계산법');
+        // 이슈 #34에서 요구한 섹션 구성
+        expect(html).toContain('부저');
+        expect(html).toContain('화료 형태');
+        expect(html).toContain('대기 형태');
+        expect(html).toContain('또이쯔');
+        expect(html).toContain('커쯔');
+        expect(html).toContain('10부 단위 절상');
+        // 주요 수치: 치또이 고정 25부, 안깡 노두·자패 32부, 절상 예시
+        expect(html).toContain('치또이츠');
+        expect(html).toContain('25부');
+        expect(html).toContain('32부');
+        expect(html).toContain('40부');
     });
 
     it('/yaku: 역 목록이 이름·설명·배지와 함께 출력된다', () => {

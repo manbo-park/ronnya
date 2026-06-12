@@ -95,20 +95,6 @@ export function ScoreTrainer() {
                 {phase === 'loading' && <LoadingView />}
                 {phase !== 'loading' && (
                     <>
-                        <div className="badges">
-                            <span
-                                className={`badge badge-seat ${dealer ? 'b-dealer' : 'b-nondealer'}`}
-                            >
-                                {dealer ? '친' : '자'}
-                            </span>
-                            {p.riichi === 2 && <span className="badge b-riichi">더블리치</span>}
-                            {p.riichi === 1 && <span className="badge b-riichi">리치</span>}
-                            {p.ippatsu && <span className="badge b-riichi">일발</span>}
-                            <span className={`badge badge-win ${tsumo ? 'b-tsumo' : 'b-ron'}`}>
-                                {tsumo ? '쯔모' : '론'}
-                            </span>
-                        </div>
-
                         <div className="dora-row">
                             <span className="row-label">장풍패</span>
                             <TileView tile={{ suit: 'z', rank: p.roundWind }} />
@@ -127,6 +113,20 @@ export function ScoreTrainer() {
                                     ),
                                 )}
                             </div>
+                        </div>
+
+                        <div className="badges">
+                            <span
+                                className={`badge badge-seat ${dealer ? 'b-dealer' : 'b-nondealer'}`}
+                            >
+                                {dealer ? '친' : '자'}
+                            </span>
+                            {p.riichi === 2 && <span className="badge b-riichi">더블리치</span>}
+                            {p.riichi === 1 && <span className="badge b-riichi">리치</span>}
+                            {p.ippatsu && <span className="badge b-riichi">일발</span>}
+                            <span className={`badge badge-win ${tsumo ? 'b-tsumo' : 'b-ron'}`}>
+                                {tsumo ? '쯔모' : '론'}
+                            </span>
                         </div>
 
                         <div key={round} className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'}`}>

@@ -84,7 +84,6 @@ describe('문제 생성기 합법성 (계획 5.2)', () => {
             limitCount[r.limitName ?? '일반'] = (limitCount[r.limitName ?? '일반'] ?? 0) + 1;
         }
         // 분포 리포트 (실패 조건 아님)
-        // eslint-disable-next-line no-console
         console.log('출제 분포:', limitCount);
     });
 });

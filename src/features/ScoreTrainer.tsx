@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { generateProblem, type GeneratedProblem } from '../core/generator';
 import { nextDoraId, tileId } from '../core/tiles';
 import type { Payment, Problem, ScoringResult, Tile } from '../core/types';
-import { MeldView, TileView, preloadTileImages } from '../components/Tiles';
+import { MeldView, TileView } from '../components/Tiles';
+import { preloadTileImages } from '../components/tileAssets';
 
 type Phase = 'challenge' | 'answer' | 'loading';
 

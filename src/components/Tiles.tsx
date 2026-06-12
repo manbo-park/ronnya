@@ -20,6 +20,24 @@ function faceUrl(t: Tile): string {
     return TILE_URLS[t.red ? `${name}-Dora` : name];
 }
 
+/** 패 이미지를 미리 받아, 화면 공개 시 패가 한 장씩 무작위로 나타나는 것을 막는다 (#32) */
+export function preloadTileImages(tiles: Tile[]): Promise<void> {
+    // SSR·테스트 환경에는 Image가 없다
+    if (typeof Image === 'undefined') return Promise.resolve();
+    const urls = new Set([TILE_URLS.Front, TILE_URLS.Back, ...tiles.map(faceUrl)]);
+    return Promise.allSettled(
+        [...urls].map(
+            (url) =>
+                new Promise<void>((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve();
+                    img.src = url;
+                }),
+        ),
+    ).then(() => undefined);
+}
+
 export function TileView({
     tile,
     win = false,

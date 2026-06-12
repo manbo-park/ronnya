@@ -1243,6 +1243,14 @@ body {
     animation-delay: 0.16s;
 }
 
+.answer > *:nth-child(4) {
+    animation-delay: 0.24s;
+}
+
+.answer > *:nth-child(5) {
+    animation-delay: 0.32s;
+}
+
 /* 정답은 통통 튀고, 오답은 흔들린다 */
 .verdict.ok {
     animation: pop-in 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) backwards;

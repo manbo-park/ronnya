@@ -18,8 +18,9 @@
     --label: #b49aff;
     /* 강조용 픽셀 폰트 (본문은 가독성을 위해 일반 고딕 유지) */
     --font-px: 'Galmuri11', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-    /* 멘젠 13장 그룹이 한 줄에 들어가는 크기 */
-    --tile-w: clamp(18px, 6.4vw, 34px);
+    /* 유형 레이블 옆 멘젠 13장이 한 줄에 들어가는 크기.
+       케이스(후로 유무 등)에 따라 패 크기가 달라지지 않도록 화면 폭으로만 정한다 (#29) */
+    --tile-w: clamp(14px, calc((min(100vw, 480px) - 154px) / 13), 40px);
 }
 
 * {
@@ -239,35 +240,36 @@ body {
     filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.4)) drop-shadow(0 0 8px rgba(255, 210, 63, 0.55));
 }
 
-/* 도라·적도라: 주기적으로 광택이 흐르는 이펙트 */
-.tile-dora {
-    overflow: hidden;
-}
-
+/* 도라·적도라: 주기적으로 광택이 흐르는 이펙트.
+   transform 애니메이션은 패를 합성 레이어로 띄워 그림자가 오른쪽 패 위에
+   회색 음영으로 비치므로(#30), 배경 위치만 움직여 패 안에서 광택을 흘린다 */
 .tile-dora::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
+    border-radius: inherit;
+    background-image: linear-gradient(
         115deg,
-        transparent 35%,
+        transparent 45%,
         rgba(255, 255, 255, 0.55) 48%,
         rgba(255, 255, 255, 0.85) 50%,
         rgba(255, 255, 255, 0.55) 52%,
-        transparent 65%
+        transparent 55%
     );
-    transform: translateX(-120%);
+    background-size: 300% 100%;
+    background-repeat: no-repeat;
+    background-position-x: 150%;
     animation: dora-shine 3.2s ease-in-out infinite;
     pointer-events: none;
 }
 
 @keyframes dora-shine {
     0% {
-        transform: translateX(-120%);
+        background-position-x: 150%;
     }
     38%,
     100% {
-        transform: translateX(120%);
+        background-position-x: -50%;
     }
 }
 
@@ -282,16 +284,30 @@ body {
     filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.4)) drop-shadow(0 0 8px rgba(75, 224, 160, 0.6));
 }
 
-/* ---- 손패 영역 ---- */
+/* ---- 손패 영역 ----
+   손패 / 후로 / 오름패를 유형 레이블이 붙은 줄로 나눠 표시한다 (#29) */
 .hand-area {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 10px;
-    padding: 10px 6px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 8px 12px;
     background: var(--bg-deep);
     border: 2px solid var(--line);
     margin-bottom: 14px;
+}
+
+/* 한 줄: 유형 레이블 + 패 묶음 */
+.hand-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 유형 레이블은 왕패 레이블보다 짧아서, 패 공간을 위해 폭을 줄인다 */
+.hand-row .row-label {
+    min-width: 56px;
+    margin-right: 0;
 }
 
 /* 한 그룹(손패/멘쯔) 안에서는 줄이 나뉘지 않고, 패끼리 거의 붙는다 */
@@ -308,9 +324,12 @@ body {
     gap: 1px;
 }
 
-/* 멘젠: 손패 13장 + 오름패가 한 줄에 들어가도록 패 폭 축소 */
-.hand-menzen {
-    --tile-w: clamp(16px, 5.4vw, 28px);
+/* 후로 줄: 멘쯔 사이에만 간격을 두고, 드물게 넘치면 다음 줄로 흘린다 */
+.meld-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px 10px;
 }
 
 .meld-tiles {
@@ -319,12 +338,15 @@ body {
     gap: 1px;
 }
 
-/* 눕힌 패: 세로 패를 90° 돌려 가로 박스에 담는다 */
+/* 눕힌 패: 세로 패를 90° 돌려 가로 박스에 담는다.
+   그림자는 패와 함께 회전해 왼쪽으로 지면 옆 패와의 간격이 넓어 보이므로(#28),
+   회전 안쪽 그림자를 끄고 회전 밖(박스)에서 다른 패와 같은 방향으로 입힌다 */
 .tile-laid {
     position: relative;
     width: calc(var(--tile-w) * 4 / 3);
     aspect-ratio: 4 / 3;
     flex-shrink: 0;
+    filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.4));
 }
 
 .tile-laid .tile {
@@ -332,6 +354,7 @@ body {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) rotate(90deg);
+    filter: none;
 }
 
 /* 가깡: 눕힌 패 두 장을 세로로 쌓는다 */
@@ -1101,17 +1124,18 @@ body {
         padding: 20px 18px;
     }
 
-    /* 넓어진 카드에 맞춰 패 크기를 키운다 (멘젠 13장도 한 줄 유지) */
+    /* 넓어진 카드에 맞춰 패 크기를 키운다 (레이블 + 멘젠 13장도 한 줄 유지) */
     :root {
         --tile-w: 40px;
     }
 
-    .hand-menzen {
-        --tile-w: 34px;
-    }
-
     .row-label {
         font-size: 11px;
+        min-width: 92px;
+    }
+
+    /* 유형 레이블 92px + 패 40px 13장이 정확히 한 줄에 들어간다 */
+    .hand-row .row-label {
         min-width: 92px;
     }
 

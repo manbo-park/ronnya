@@ -113,6 +113,17 @@ body {
     text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
 }
 
+/* 타이틀 옆 픽셀 고양이 발바닥 2개 — 글자 크기에 맞춰 노란 강조색으로 노출 (#39) */
+.title-paw {
+    width: 1.2em;
+    height: 1.2em;
+    margin-left: 0.18em;
+    vertical-align: -0.22em;
+    color: var(--pop);
+    /* 타이틀 글자(text-shadow)와 같은 픽셀 그림자 결 */
+    filter: drop-shadow(1.5px 1.5px 0 rgba(0, 0, 0, 0.5));
+}
+
 .app-header h1::after {
     content: '';
     display: block;

@@ -102,21 +102,29 @@ export function ScoreTrainer() {
                             </div>
                         </div>
 
-                        <div
-                            key={round}
-                            className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'} ${
-                                p.melds.length === 0 ? 'hand-menzen' : ''
-                            }`}
-                        >
-                            <div className="hand-tiles">
-                                {p.hand.map((t, i) => (
-                                    <TileView key={i} tile={t} dora={isDora(t)} />
-                                ))}
+                        <div key={round} className={`hand-area ${tsumo ? 'win-tsumo' : 'win-ron'}`}>
+                            <div className="hand-row">
+                                <span className="row-label">손패</span>
+                                <div className="hand-tiles">
+                                    {p.hand.map((t, i) => (
+                                        <TileView key={i} tile={t} dora={isDora(t)} />
+                                    ))}
+                                </div>
                             </div>
-                            {p.melds.map((m, i) => (
-                                <MeldView key={i} meld={m} isDora={isDora} />
-                            ))}
-                            <TileView tile={p.winningTile} win dora={isDora(p.winningTile)} />
+                            {p.melds.length > 0 && (
+                                <div className="hand-row">
+                                    <span className="row-label">후로</span>
+                                    <div className="meld-list">
+                                        {p.melds.map((m, i) => (
+                                            <MeldView key={i} meld={m} isDora={isDora} />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            <div className="hand-row">
+                                <span className="row-label">오름패</span>
+                                <TileView tile={p.winningTile} win dora={isDora(p.winningTile)} />
+                            </div>
                         </div>
 
                         {phase === 'challenge' ? (

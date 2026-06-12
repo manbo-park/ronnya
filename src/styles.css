@@ -1166,6 +1166,20 @@ body {
     animation-delay: 0.16s;
 }
 
+/* 페이지 진입: 부수 계산법 카드(안내문 → 각 부수 카드)가 순서대로 떠오른다.
+   카드가 많아 전부 지연하면 뒤쪽이 늦게 보이므로 세 번째 카드부터는 지연을 고정한다. */
+.fu-guide > * {
+    animation: rise-in 0.3s ease-out backwards;
+}
+
+.fu-guide > :nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.fu-guide > :nth-child(n + 3) {
+    animation-delay: 0.16s;
+}
+
 /* 상태 변화는 중단 가능하도록 transition으로 처리 */
 .btn,
 .seat-btn,

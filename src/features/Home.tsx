@@ -33,24 +33,29 @@ export function Home() {
             <header className="app-header">
                 <h1>
                     론냐
-                    {/* 픽셀 그리드(8×8)로 그린 고양이 발바닥 — 폰트 이모지 대신 픽셀 스타일 유지 (#39) */}
+                    {/* 픽셀 그리드(10×10)로 그린 고양이 발바닥 2개 — 🐾를 픽셀 스타일로 (#39) */}
                     <svg
                         className="title-paw"
-                        viewBox="0 0 8 8"
+                        viewBox="0 0 10 10"
                         shapeRendering="crispEdges"
                         fill="currentColor"
                         role="img"
                         aria-label="고양이 발바닥"
                     >
-                        {/* 발가락 패드 4개 — 안쪽 둘이 한 칸 높은 아치 */}
-                        <rect x="0" y="2" width="1" height="2" />
-                        <rect x="2" y="1" width="1" height="2" />
-                        <rect x="5" y="1" width="1" height="2" />
-                        <rect x="7" y="2" width="1" height="2" />
-                        {/* 손바닥 패드 */}
-                        <rect x="2" y="5" width="4" height="1" />
-                        <rect x="1" y="6" width="6" height="1" />
-                        <rect x="2" y="7" width="4" height="1" />
+                        {/* 좌상단 발바닥 */}
+                        <rect x="0" y="0" width="1" height="1" />
+                        <rect x="2" y="0" width="1" height="1" />
+                        <rect x="4" y="0" width="1" height="1" />
+                        <rect x="1" y="2" width="3" height="1" />
+                        <rect x="0" y="3" width="5" height="1" />
+                        <rect x="1" y="4" width="3" height="1" />
+                        {/* 우하단 발바닥 */}
+                        <rect x="5" y="5" width="1" height="1" />
+                        <rect x="7" y="5" width="1" height="1" />
+                        <rect x="9" y="5" width="1" height="1" />
+                        <rect x="6" y="7" width="3" height="1" />
+                        <rect x="5" y="8" width="5" height="1" />
+                        <rect x="6" y="9" width="3" height="1" />
                     </svg>
                 </h1>
             </header>

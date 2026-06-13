@@ -1175,6 +1175,189 @@ body {
     animation-delay: 0.16s;
 }
 
+/* ---- 부수 계산기 (#51) ---- */
+.fu-calc {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.fc-special {
+    display: flex;
+    gap: 8px;
+}
+
+.fc-special-btn {
+    flex: 1;
+    padding: 12px;
+    font-family: var(--font-px);
+    font-size: 14px;
+    font-weight: 700;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.fc-special-btn.on {
+    background: var(--pop);
+    color: #241c05;
+    border-color: var(--pop);
+    box-shadow: 0 2px 0 var(--pop-shade);
+}
+
+.fc-special-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 2px;
+}
+
+.fc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* 핑후·치또이 고정 시 아래 입력은 흐리게 + 비활성 */
+.fc-body.locked {
+    opacity: 0.4;
+}
+
+.fc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fc-field-label {
+    font-family: var(--font-px);
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.seg-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+}
+
+.seg-btn {
+    flex: 1 1 auto;
+    min-width: 52px;
+    padding: 9px 6px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-px);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.seg-btn.on {
+    background: var(--pop);
+    color: #241c05;
+    box-shadow: 0 2px 0 var(--pop-shade);
+}
+
+.seg-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 2px;
+}
+
+.seg-btn:disabled {
+    cursor: not-allowed;
+}
+
+.fc-add {
+    margin-top: 2px;
+    width: 100%;
+}
+
+.fc-kotsu-list {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fc-kotsu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--bg-deep);
+    border: 2px solid var(--line);
+    font-size: 14px;
+}
+
+.fc-kotsu-fu {
+    margin-left: auto;
+    color: var(--pop);
+    font-family: var(--font-px);
+    font-size: 13px;
+}
+
+.fc-kotsu-del {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.fc-kotsu-del:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.fc-actions {
+    display: flex;
+}
+
+.fc-actions .btn {
+    flex: 1;
+}
+
+.fc-result {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fc-total {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+    font-family: var(--font-px);
+}
+
+.fc-total-raw {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.fc-total-arrow {
+    color: var(--muted);
+}
+
+.fc-total-final {
+    color: var(--pop);
+    font-size: 22px;
+    font-weight: 700;
+}
+
 /* 페이지 진입: 부수 계산법 카드(안내문 → 각 부수 카드)가 순서대로 떠오른다.
    카드가 많아 전부 지연하면 뒤쪽이 늦게 보이므로 세 번째 카드부터는 지연을 고정한다. */
 .fu-guide > * {

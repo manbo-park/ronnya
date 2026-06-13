@@ -753,6 +753,14 @@ body {
     font-weight: 700;
 }
 
+/* 20·25부 힌트: 부수 글자보다 작게, 볼드 없이 줄바꿈하여 표시 */
+.st-fu-hint {
+    display: block;
+    font-size: 0.72em;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+}
+
 /* 판 라벨(첫 열) 스타일 (너비는 colgroup이 제어) */
 .st-corner,
 .st-han {

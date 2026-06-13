@@ -6,6 +6,9 @@ const FU_BASE = [20, 25, 30, 40, 50, 60];
 const FU_EXT = [70, 80, 90, 100, 110];
 const HAN_ROWS = [1, 2, 3, 4];
 
+// 20부는 핑후 쯔모, 25부는 치또이에서만 나오는 부수라 헤더에 힌트를 단다
+const FU_HINT: Record<number, string> = { 20: '핑후쯔모', 25: '치또이' };
+
 // 만관 이상은 점수 없이 명칭만 표시. 판수 구간별로 행을 묶는다.
 const LIMIT_GROUPS: { labels: string[]; name: string; han: number }[] = [
     { labels: ['5판'], name: '만관', han: 5 },
@@ -108,7 +111,12 @@ export function ScoreTable() {
                         <tr>
                             <th className="st-corner" />
                             {visibleFu.map((fu) => (
-                                <th key={fu}>{`${fu}부`}</th>
+                                <th key={fu}>
+                                    {`${fu}부`}
+                                    {FU_HINT[fu] && (
+                                        <span className="st-fu-hint">{FU_HINT[fu]}</span>
+                                    )}
+                                </th>
                             ))}
                         </tr>
                     </thead>

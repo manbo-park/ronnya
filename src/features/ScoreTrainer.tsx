@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { generateProblem, type GeneratedProblem } from '../core/generator';
 import { nextDoraId, tileId } from '../core/tiles';
+import { paymentText } from '../core/points';
 import type { Payment, Problem, ScoringResult, Tile } from '../core/types';
 import { MeldView, TileView } from '../components/Tiles';
 import { preloadTileImages } from '../components/tileAssets';
@@ -357,13 +358,6 @@ function gradeAnswer(r: ScoringResult, answer: string): boolean {
     if (r.payment.kind === 'tsumoDealer') return Number(answer) === r.payment.each;
     const [others, dealer] = answer.trim().split(/\s+/).map(Number);
     return others === r.payment.others && dealer === r.payment.dealer;
-}
-
-function paymentText(pm: Payment): string {
-    const f = (n: number) => n.toLocaleString('ko-KR');
-    if (pm.kind === 'ron') return `${f(pm.total)}`;
-    if (pm.kind === 'tsumoDealer') return `${f(pm.each)} 올`;
-    return `${f(pm.others)} / ${f(pm.dealer)}`;
 }
 
 function AnswerView({

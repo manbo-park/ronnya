@@ -1175,6 +1175,257 @@ body {
     animation-delay: 0.16s;
 }
 
+/* ---- 부수 계산기 (#51) ---- */
+.calc {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* 페이지 진입: 위에서부터 순서대로 떠오른다. 항목이 많아 세 번째부터는 지연을 고정한다 */
+.calc > * {
+    animation: rise-in 0.3s ease-out backwards;
+}
+
+.calc > :nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.calc > :nth-child(n + 3) {
+    animation-delay: 0.16s;
+}
+
+.calc-special {
+    display: flex;
+    gap: 8px;
+}
+
+.calc-special-btn {
+    flex: 1;
+    padding: 12px;
+    font-family: var(--font-px);
+    font-size: 14px;
+    font-weight: 700;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.calc-special-btn.on {
+    background: var(--pop);
+    color: #241c05;
+    border-color: var(--pop);
+    box-shadow: 0 2px 0 var(--pop-shade);
+}
+
+.calc-special-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 2px;
+}
+
+.calc-special-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.calc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.calc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.calc-field-label {
+    font-family: var(--font-px);
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.seg-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+}
+
+.seg-btn {
+    flex: 1 1 auto;
+    min-width: 52px;
+    padding: 9px 6px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-px);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.seg-btn.on {
+    background: var(--pop);
+    color: #241c05;
+    box-shadow: 0 2px 0 var(--pop-shade);
+}
+
+.seg-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 2px;
+}
+
+.seg-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.calc-add {
+    margin-top: 2px;
+    width: 100%;
+}
+
+.calc-add:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.calc-kotsu-list {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.calc-kotsu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--bg-deep);
+    border: 2px solid var(--line);
+    font-size: 14px;
+}
+
+.calc-kotsu-fu {
+    margin-left: auto;
+    color: var(--pop);
+    font-family: var(--font-px);
+    font-size: 13px;
+}
+
+.calc-kotsu-del {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.calc-kotsu-del:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.calc-actions {
+    display: flex;
+    justify-content: center;
+}
+
+/* 리셋은 보조 액션 — 다른 버튼(채움/실선)과 달리 점선 테두리로 차분하게 둔다 */
+.calc-reset {
+    padding: 8px 24px;
+    background: transparent;
+    border: 2px dashed var(--panel-edge);
+    color: var(--muted);
+    font-family: var(--font-px);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+}
+
+.calc-reset:hover {
+    color: var(--text);
+    border-color: var(--muted);
+}
+
+.calc-reset:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 2px;
+}
+
+.calc-reset:active {
+    transform: translateY(2px);
+}
+
+.calc-result {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.calc-kotsu-empty {
+    margin: 6px 0 0;
+    padding: 10px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.calc-warning {
+    margin: 0;
+    padding: 10px 12px;
+    text-align: center;
+    background: rgba(255, 93, 73, 0.12);
+    border: 2px solid var(--alert);
+    color: var(--alert);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* 탭 바: 모드 전환·정보 탭 공용. 입력 세그먼트(박스 채움)와 구분되도록
+   밑줄 탭 형태로 둔다 (#51 후속) */
+.tab-bar {
+    display: flex;
+    border-bottom: 2px solid var(--panel-edge);
+    margin-bottom: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    margin-bottom: -2px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--muted);
+    font-family: var(--font-px);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tab-btn.on {
+    color: var(--pop);
+    border-bottom-color: var(--pop);
+}
+
+.tab-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 2px;
+}
+
 /* 페이지 진입: 부수 계산법 카드(안내문 → 각 부수 카드)가 순서대로 떠오른다.
    카드가 많아 전부 지연하면 뒤쪽이 늦게 보이므로 세 번째 카드부터는 지연을 고정한다. */
 .fu-guide > * {

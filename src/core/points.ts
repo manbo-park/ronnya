@@ -74,3 +74,11 @@ export function computePoints(
 
     return { basePoints: base, limitName, payment, totalReceived };
 }
+
+// 지불 분배를 화면 표기 문자열로. 론은 총액, 친 쯔모는 "x 올", 자 쯔모는 "자 / 친".
+export function paymentText(pm: Payment): string {
+    const f = (n: number) => n.toLocaleString('ko-KR');
+    if (pm.kind === 'ron') return `${f(pm.total)}`;
+    if (pm.kind === 'tsumoDealer') return `${f(pm.each)} 올`;
+    return `${f(pm.others)} / ${f(pm.dealer)}`;
+}

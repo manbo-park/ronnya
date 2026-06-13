@@ -20,6 +20,7 @@ const GROUPS: MenuGroup[] = [
     {
         label: '유틸리티',
         items: [
+            { to: '/calc', title: '점수 계산기', desc: '항목 선택으로 점수·부수 계산' },
             { to: '/score-table', title: '점수표', desc: '판·부수별 점수 조견표' },
             { to: '/yaku', title: '역 목록', desc: '역 이름·설명·예시' },
             { to: '/fu', title: '부수 계산법', desc: '부수 항목별 계산 안내' },

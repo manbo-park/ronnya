@@ -14,10 +14,7 @@ export default function App() {
                 <Route
                     path="/score"
                     element={
-                        <Page
-                            title="점수 계산 연습"
-                            footer="작혼 룰 기준 · 0본장 고정 · 뒷도라 미적용"
-                        >
+                        <Page title="연습하기" footer="작혼 룰 기준 · 0본장 고정 · 뒷도라 미적용">
                             <ScoreTrainer />
                         </Page>
                     }
@@ -33,7 +30,7 @@ export default function App() {
                 <Route
                     path="/calc"
                     element={
-                        <Page title="점수 계산기" footer="작혼 룰 기준 · 연풍 또이쯔 4부">
+                        <Page title="계산하기" footer="작혼 룰 기준 · 연풍 또이쯔 4부">
                             <Calculator />
                         </Page>
                     }

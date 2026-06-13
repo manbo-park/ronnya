@@ -37,7 +37,7 @@ describe('앱 스모크 테스트', () => {
 
     it('/score: 최초 진입 시 문제 대신 로딩 UI가 출력된다 (#32)', () => {
         const html = renderAt('/score');
-        expect(html).toContain('점수 계산 연습');
+        expect(html).toContain('연습하기');
         expect(html).toContain('문제 준비 중');
         // 패 이미지가 준비되기 전에는 문제를 노출하지 않는다
         expect(html).not.toContain('도라표시패');

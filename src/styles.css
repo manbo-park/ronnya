@@ -1182,16 +1182,28 @@ body {
     gap: 14px;
 }
 
-/* 페이지 진입: 위에서부터 순서대로 떠오른다. 항목이 많아 세 번째부터는 지연을 고정한다 */
-.calc > * {
+/* 탭 바는 페이지 진입 시 한 번만 떠오른다 */
+.tab-bar {
     animation: rise-in 0.3s ease-out backwards;
 }
 
-.calc > :nth-child(2) {
+.calc-content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* 콘텐츠는 위에서부터 순서대로 떠오른다. key(=탭)가 바뀌면 재마운트되어 탭 전환마다
+   다시 재생된다. 항목이 많아 세 번째부터는 지연을 고정한다 */
+.calc-content > * {
+    animation: rise-in 0.3s ease-out backwards;
+}
+
+.calc-content > :nth-child(2) {
     animation-delay: 0.08s;
 }
 
-.calc > :nth-child(n + 3) {
+.calc-content > :nth-child(n + 3) {
     animation-delay: 0.16s;
 }
 

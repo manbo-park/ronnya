@@ -7,20 +7,21 @@ interface MenuItem {
 }
 
 interface MenuGroup {
-    label: string;
+    label?: string;
     items: MenuItem[];
 }
 
-// 트레이닝 그룹을 위에, 유틸리티 그룹을 그 아래에 배치한다
+// 주요 메뉴(연습·계산)는 라벨 없이 위에, 참고용 메뉴는 '더 알아보기' 그룹으로 묶어 아래에 배치한다
 const GROUPS: MenuGroup[] = [
     {
-        label: '트레이닝',
-        items: [{ to: '/score', title: '점수 계산 연습', desc: '화료 점수 맞추기' }],
+        items: [
+            { to: '/score', title: '연습하기', desc: '화료 점수 맞추기' },
+            { to: '/calc', title: '계산하기', desc: '항목 선택으로 점수·부수 계산' },
+        ],
     },
     {
-        label: '유틸리티',
+        label: '더 알아보기',
         items: [
-            { to: '/calc', title: '점수 계산기', desc: '항목 선택으로 점수·부수 계산' },
             { to: '/score-table', title: '점수표', desc: '판·부수별 점수 조견표' },
             { to: '/yaku', title: '역 목록', desc: '역 이름·설명·예시' },
             { to: '/fu', title: '부수 계산법', desc: '부수 항목별 계산 안내' },
@@ -62,8 +63,8 @@ export function Home() {
             </header>
 
             {GROUPS.map((group) => (
-                <section key={group.label} className="menu-section">
-                    <h2 className="menu-section-title">{group.label}</h2>
+                <section key={group.label ?? 'main'} className="menu-section">
+                    {group.label && <h2 className="menu-section-title">{group.label}</h2>}
                     <nav className="menu-grid">
                         {group.items.map((m) => (
                             <Link key={m.to} to={m.to} className="menu-card">

@@ -23,3 +23,102 @@ export function kotsuFu(o: { concealed: boolean; quad: boolean; terminal: boolea
 export function roundUpFu(raw: number): number {
     return Math.ceil(raw / 10) * 10;
 }
+
+// ---- 부수 계산기 ----
+// 사용자가 화료/대기/또이쯔/커쯔를 직접 골라 부수를 조립하는 입력 모델.
+
+export type Special = 'none' | 'pinfu' | 'chiitoi';
+export type WinForm = 'menzenRon' | 'tsumo' | 'furoRon';
+export type Wait = 'ryanmen' | 'shanpon' | 'kanchan' | 'penchan' | 'tanki';
+export type PairType = 'normal' | 'yakuhai' | 'roundWind' | 'seatWind' | 'doubleWind';
+export type KotsuKind = 'minko' | 'anko' | 'minkan' | 'ankan';
+
+export interface Kotsu {
+    kind: KotsuKind;
+    terminal: boolean; // 노두·자패 여부
+}
+
+export interface FuInput {
+    special: Special;
+    winForm: WinForm;
+    wait: Wait;
+    pair: PairType;
+    kotsu: Kotsu[];
+}
+
+export interface FuBreakdownRow {
+    label: string;
+    fu: number;
+}
+
+export interface FuResult {
+    raw: number; // 절상 전 합계 (고정값은 그대로)
+    rounded: number; // 10부 절상 또는 고정값
+    breakdown: FuBreakdownRow[];
+}
+
+export const KOTSU_KINDS: { kind: KotsuKind; label: string; concealed: boolean; quad: boolean }[] =
+    [
+        { kind: 'minko', label: '밍커', concealed: false, quad: false },
+        { kind: 'anko', label: '안커', concealed: true, quad: false },
+        { kind: 'minkan', label: '밍깡', concealed: false, quad: true },
+        { kind: 'ankan', label: '안깡', concealed: true, quad: true },
+    ];
+
+const WIN_FORM: Record<WinForm, { label: string; fu: number }> = {
+    menzenRon: { label: '멘젠 론', fu: FU.menzenRon },
+    tsumo: { label: '쯔모', fu: FU.tsumo },
+    furoRon: { label: '후로 론', fu: 0 },
+};
+
+const WAIT: Record<Wait, { label: string; fu: number }> = {
+    ryanmen: { label: '양면 대기', fu: 0 },
+    shanpon: { label: '샤보 대기', fu: 0 },
+    kanchan: { label: '간짱 대기', fu: FU.wait },
+    penchan: { label: '변짱 대기', fu: FU.wait },
+    tanki: { label: '단기 대기', fu: FU.wait },
+};
+
+const PAIR: Record<PairType, { label: string; fu: number }> = {
+    normal: { label: '수패 · 객풍 또이쯔', fu: 0 },
+    yakuhai: { label: '역패 또이쯔', fu: FU.yakuhaiPair },
+    roundWind: { label: '장풍 또이쯔', fu: FU.yakuhaiPair },
+    seatWind: { label: '자풍 또이쯔', fu: FU.yakuhaiPair },
+    doubleWind: { label: '연풍 또이쯔', fu: FU.doubleWindPair },
+};
+
+export function calcFu(input: FuInput): FuResult {
+    if (input.special === 'pinfu') {
+        return { raw: 20, rounded: 20, breakdown: [{ label: '핑후 (고정)', fu: 20 }] };
+    }
+    if (input.special === 'chiitoi') {
+        return { raw: 25, rounded: 25, breakdown: [{ label: '치또이츠 (고정)', fu: 25 }] };
+    }
+
+    const breakdown: FuBreakdownRow[] = [{ label: '부저', fu: FU.base }];
+
+    const win = WIN_FORM[input.winForm];
+    if (win.fu > 0) breakdown.push({ label: win.label, fu: win.fu });
+
+    const wait = WAIT[input.wait];
+    if (wait.fu > 0) breakdown.push({ label: wait.label, fu: wait.fu });
+
+    const pair = PAIR[input.pair];
+    if (pair.fu > 0) breakdown.push({ label: pair.label, fu: pair.fu });
+
+    for (const k of input.kotsu) {
+        const def = KOTSU_KINDS.find((d) => d.kind === k.kind)!;
+        const fu = kotsuFu({ concealed: def.concealed, quad: def.quad, terminal: k.terminal });
+        breakdown.push({ label: `${k.terminal ? '노두·자패' : '중장패'} ${def.label}`, fu });
+    }
+
+    let raw = breakdown.reduce((s, r) => s + r.fu, 0);
+
+    // 쿠이핑후형: 후로 손에서 가산이 없어 20부면 30부로 처리
+    if (input.winForm === 'furoRon' && raw === 20) {
+        breakdown.push({ label: '울고 20부 (쿠이핑후형 보정)', fu: 10 });
+        raw = 30;
+    }
+
+    return { raw, rounded: roundUpFu(raw), breakdown };
+}

@@ -1182,6 +1182,19 @@ body {
     gap: 14px;
 }
 
+/* 페이지 진입: 위에서부터 순서대로 떠오른다. 항목이 많아 세 번째부터는 지연을 고정한다 */
+.calc > * {
+    animation: rise-in 0.3s ease-out backwards;
+}
+
+.calc > :nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.calc > :nth-child(n + 3) {
+    animation-delay: 0.16s;
+}
+
 .calc-special {
     display: flex;
     gap: 8px;

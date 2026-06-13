@@ -96,6 +96,9 @@ export function Calculator() {
     // 화료 형태(쯔모/론)는 점수의 쯔모·론과 핑후 부수(쯔모 20 / 론 30)를 가른다.
     // 부수가 화료 형태와 무관한 치또이(25 고정)만, 부수만 모드에서 잠근다.
     const winFormLocked = input.special === 'chiitoi' && mode === 'fuOnly';
+    // 1판이 불가능한 형태: 치또이(2판 확정) / 핑후+쯔모(핑후1+멘젠쯔모1)
+    const hanFloorTwo =
+        input.special === 'chiitoi' || (input.special === 'pinfu' && input.winForm === 'tsumo');
 
     // 샤보 대기는 또이쯔 하나가 커쯔(밍커/안커)로 완성되는 형태다. 깡은 이미 4장으로
     // 완성돼 대기 멘쯔가 될 수 없으므로, 커쯔가 하나도 없으면 경고한다.
@@ -124,8 +127,18 @@ export function Calculator() {
             const winForm = special !== 'none' && p.winForm === 'furoRon' ? 'menzenRon' : p.winForm;
             return { ...p, special, winForm };
         });
-        // 치또이는 2판 확정이라 1판이 될 수 없다
-        if (s === 'chiitoi' && input.special !== 'chiitoi' && han < 2) setHan(2);
+        // 1판이 불가능해지는 형태로 켜지면 선택을 2판으로 올린다
+        if (han < 2) {
+            if (s === 'chiitoi' && input.special !== 'chiitoi') setHan(2);
+            else if (s === 'pinfu' && input.special !== 'pinfu' && input.winForm === 'tsumo')
+                setHan(2);
+        }
+    };
+
+    const setWinForm = (v: WinForm) => {
+        setInput((p) => ({ ...p, winForm: v }));
+        // 핑후+쯔모는 최소 2판이라 1판이 선택돼 있었다면 2판으로 올린다
+        if (v === 'tsumo' && input.special === 'pinfu' && han < 2) setHan(2);
     };
 
     const addKotsu = () =>
@@ -188,7 +201,7 @@ export function Calculator() {
                                         type="button"
                                         className={`seg-btn ${han === h ? 'on' : ''}`}
                                         aria-pressed={han === h}
-                                        disabled={input.special === 'chiitoi' && h < 2}
+                                        disabled={hanFloorTwo && h < 2}
                                         onClick={() => setHan(h)}
                                     >
                                         {h >= 13 ? '13판↑ · 역만' : `${h}판`}
@@ -232,7 +245,7 @@ export function Calculator() {
                             // 핑후·치또이는 멘젠 한정이라 후로 론과 양립 불가
                             disabled: input.special !== 'none' && o.value === 'furoRon',
                         }))}
-                        onChange={(v) => setInput((p) => ({ ...p, winForm: v }))}
+                        onChange={setWinForm}
                         disabled={winFormLocked}
                     />
                     <Segmented

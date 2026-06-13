@@ -305,31 +305,34 @@ export function FuCalculator() {
                 </button>
             </div>
 
-            <div className="fc-result">
-                <table className="detail-table">
-                    <caption>부수 계산</caption>
-                    <tbody>
-                        {result.breakdown.map((b, i) => (
-                            <tr key={i}>
-                                <td>{b.label}</td>
-                                <td className="num-cell">{b.fu}부</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="fc-total">
-                    <span className="fc-total-raw">합계 {result.raw}부</span>
-                    <span className="fc-total-arrow">→</span>
-                    <span className="fc-total-final">{result.rounded}부</span>
+            {!fuIrrelevant && (
+                <div className="fc-result">
+                    <table className="detail-table">
+                        <caption>부수 계산</caption>
+                        <tbody>
+                            {result.breakdown.map((b, i) => (
+                                <tr key={i}>
+                                    <td>{b.label}</td>
+                                    <td className="num-cell">{b.fu}부</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="fc-total">
+                        <span className="fc-total-raw">합계 {result.raw}부</span>
+                        <span className="fc-total-arrow">→</span>
+                        <span className="fc-total-final">{result.rounded}부</span>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {score && (
                 <div className="fc-score">
                     <div className="fc-score-head">
                         <span>
-                            {han >= 13 ? '13판↑' : `${han}판`} {result.rounded}부 ·{' '}
-                            {isDealer ? '친' : '자'} {input.winForm === 'tsumo' ? '쯔모' : '론'}
+                            {han >= 13 ? '13판↑' : `${han}판`}
+                            {!fuIrrelevant && ` ${result.rounded}부`} · {isDealer ? '친' : '자'}{' '}
+                            {input.winForm === 'tsumo' ? '쯔모' : '론'}
                         </span>
                         {score.limitName && (
                             <span className="fc-score-limit">

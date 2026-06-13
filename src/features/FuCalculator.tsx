@@ -121,10 +121,10 @@ export function FuCalculator() {
 
     return (
         <div className="fu-calc">
-            <div className="fc-mode seg-group" role="group" aria-label="계산 모드">
+            <div className="tab-bar" role="group" aria-label="계산 모드">
                 <button
                     type="button"
-                    className={`seg-btn ${mode === 'score' ? 'on' : ''}`}
+                    className={`tab-btn ${mode === 'score' ? 'on' : ''}`}
                     aria-pressed={mode === 'score'}
                     onClick={() => setMode('score')}
                 >
@@ -132,7 +132,7 @@ export function FuCalculator() {
                 </button>
                 <button
                     type="button"
-                    className={`seg-btn ${mode === 'fuOnly' ? 'on' : ''}`}
+                    className={`tab-btn ${mode === 'fuOnly' ? 'on' : ''}`}
                     aria-pressed={mode === 'fuOnly'}
                     onClick={() => setMode('fuOnly')}
                 >

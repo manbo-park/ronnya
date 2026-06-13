@@ -1359,9 +1359,36 @@ body {
     font-weight: 700;
 }
 
-/* 모드 토글: 점수 계산 / 부수만 계산 */
-.fc-mode {
-    margin-bottom: 2px;
+/* 탭 바: 모드 전환·정보 탭 공용. 입력 세그먼트(박스 채움)와 구분되도록
+   밑줄 탭 형태로 둔다 (#51 후속) */
+.tab-bar {
+    display: flex;
+    border-bottom: 2px solid var(--panel-edge);
+    margin-bottom: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    margin-bottom: -2px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--muted);
+    font-family: var(--font-px);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tab-btn.on {
+    color: var(--pop);
+    border-bottom-color: var(--pop);
+}
+
+.tab-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 2px;
 }
 
 /* 점수 결과 */

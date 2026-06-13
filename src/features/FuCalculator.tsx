@@ -330,9 +330,9 @@ export function FuCalculator() {
                 <div className="fc-score">
                     <div className="fc-score-head">
                         <span>
+                            {isDealer ? '친' : '자'} {input.winForm === 'tsumo' ? '쯔모' : '론'} ·{' '}
                             {han >= 13 ? '13판↑' : `${han}판`}
-                            {!fuIrrelevant && ` ${result.rounded}부`} · {isDealer ? '친' : '자'}{' '}
-                            {input.winForm === 'tsumo' ? '쯔모' : '론'}
+                            {!fuIrrelevant && ` ${result.rounded}부`}
                         </span>
                         {score.limitName && (
                             <span className="fc-score-limit">

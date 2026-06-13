@@ -140,6 +140,36 @@ export function FuCalculator() {
                 </button>
             </div>
 
+            {mode === 'score' && (
+                <>
+                    <Segmented
+                        label="자 / 친"
+                        value={isDealer ? 'dealer' : 'nonDealer'}
+                        options={[
+                            { value: 'nonDealer', label: '자 (비장가)' },
+                            { value: 'dealer', label: '친 (장가)' },
+                        ]}
+                        onChange={(v) => setIsDealer(v === 'dealer')}
+                    />
+                    <div className="fc-field">
+                        <span className="fc-field-label">판수</span>
+                        <div className="seg-group" role="group" aria-label="판수">
+                            {HAN_OPTS.map((h) => (
+                                <button
+                                    key={h}
+                                    type="button"
+                                    className={`seg-btn ${han === h ? 'on' : ''}`}
+                                    aria-pressed={han === h}
+                                    onClick={() => setHan(h)}
+                                >
+                                    {h >= 13 ? '13판↑ · 역만' : `${h}판`}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </>
+            )}
+
             <div className="fc-special">
                 <button
                     type="button"
@@ -263,36 +293,6 @@ export function FuCalculator() {
                         </ul>
                     )}
                 </div>
-
-                {mode === 'score' && (
-                    <>
-                        <Segmented
-                            label="자 / 친"
-                            value={isDealer ? 'dealer' : 'nonDealer'}
-                            options={[
-                                { value: 'nonDealer', label: '자 (비장가)' },
-                                { value: 'dealer', label: '친 (장가)' },
-                            ]}
-                            onChange={(v) => setIsDealer(v === 'dealer')}
-                        />
-                        <div className="fc-field">
-                            <span className="fc-field-label">판수</span>
-                            <div className="seg-group" role="group" aria-label="판수">
-                                {HAN_OPTS.map((h) => (
-                                    <button
-                                        key={h}
-                                        type="button"
-                                        className={`seg-btn ${han === h ? 'on' : ''}`}
-                                        aria-pressed={han === h}
-                                        onClick={() => setHan(h)}
-                                    >
-                                        {h >= 13 ? '13판↑' : `${h}판`}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </>
-                )}
             </div>
 
             <div className="fc-actions">

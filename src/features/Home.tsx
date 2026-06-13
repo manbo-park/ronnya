@@ -15,14 +15,14 @@ interface MenuGroup {
 const GROUPS: MenuGroup[] = [
     {
         items: [
-            { to: '/score', title: '연습하기', desc: '화료 점수 맞추기' },
+            { to: '/train', title: '연습하기', desc: '화료 점수 맞추기' },
             { to: '/calc', title: '계산하기', desc: '항목 선택으로 점수·부수 계산' },
         ],
     },
     {
         label: '더 알아보기',
         items: [
-            { to: '/score-table', title: '점수표', desc: '판·부수별 점수 조견표' },
+            { to: '/score', title: '점수표', desc: '판·부수별 점수 조견표' },
             { to: '/yaku', title: '역 목록', desc: '역 이름·설명·예시' },
             { to: '/fu', title: '부수 계산법', desc: '부수 항목별 계산 안내' },
         ],

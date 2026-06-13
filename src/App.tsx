@@ -12,7 +12,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route
-                    path="/score"
+                    path="/train"
                     element={
                         <Page title="연습하기" footer="작혼 룰 기준 · 0본장 고정 · 뒷도라 미적용">
                             <ScoreTrainer />
@@ -20,7 +20,7 @@ export default function App() {
                     }
                 />
                 <Route
-                    path="/score-table"
+                    path="/score"
                     element={
                         <Page title="점수표">
                             <ScoreTable />

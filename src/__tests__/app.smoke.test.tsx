@@ -19,7 +19,7 @@ describe('앱 스모크 테스트', () => {
         // 주요 메뉴: 연습하기 / 계산하기 (트레이닝·유틸리티 그룹 라벨 제거)
         expect(html).toContain('연습하기');
         expect(html).toContain('계산하기');
-        expect(html).toContain('href="/score"');
+        expect(html).toContain('href="/train"');
         expect(html).toContain('href="/calc"');
         expect(html).not.toContain('트레이닝');
         expect(html).not.toContain('유틸리티');
@@ -28,15 +28,15 @@ describe('앱 스모크 테스트', () => {
         expect(html).toContain('점수표');
         expect(html).toContain('역 목록');
         expect(html).toContain('부수 계산법');
-        expect(html).toContain('href="/score-table"');
+        expect(html).toContain('href="/score"');
         expect(html).toContain('href="/yaku"');
         expect(html).toContain('href="/fu"');
         // 더 알아보기 그룹은 주요 메뉴 아래에 배치
         expect(html.indexOf('href="/calc"')).toBeLessThan(html.indexOf('더 알아보기'));
     });
 
-    it('/score: 최초 진입 시 문제 대신 로딩 UI가 출력된다 (#32)', () => {
-        const html = renderAt('/score');
+    it('/train: 최초 진입 시 문제 대신 로딩 UI가 출력된다 (#32)', () => {
+        const html = renderAt('/train');
         expect(html).toContain('연습하기');
         expect(html).toContain('문제 준비 중');
         // 패 이미지가 준비되기 전에는 문제를 노출하지 않는다
@@ -44,8 +44,8 @@ describe('앱 스모크 테스트', () => {
         expect(html).not.toContain('확인');
     });
 
-    it('/score-table: 론/쯔모 2줄 표기와 만관 이상 명칭, 기본 60부까지 출력된다', () => {
-        const html = renderAt('/score-table');
+    it('/score: 론/쯔모 2줄 표기와 만관 이상 명칭, 기본 60부까지 출력된다', () => {
+        const html = renderAt('/score');
         expect(html).toContain('점수표');
         // 자/친 버튼 (괄호 라벨 없음)
         expect(html).toContain('>자<');

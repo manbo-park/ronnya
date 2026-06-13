@@ -91,6 +91,8 @@ export function FuCalculator() {
 
     const result = calcFu(input);
     const fuLocked = input.special !== 'none';
+    // 점수 모드에서 만관 이상(5판+)은 부수가 점수에 무의미하므로 부수 입력을 비활성
+    const fuIrrelevant = mode === 'score' && han >= 5;
     // 점수 모드에선 쯔모/론을 점수에 써야 하므로 화료 형태는 핑후/치또이여도 활성
     const winFormLocked = fuLocked && mode === 'fuOnly';
 
@@ -175,6 +177,7 @@ export function FuCalculator() {
                     type="button"
                     className={`fc-special-btn ${input.special === 'pinfu' ? 'on' : ''}`}
                     aria-pressed={input.special === 'pinfu'}
+                    disabled={fuIrrelevant}
                     onClick={() => toggleSpecial('pinfu')}
                 >
                     핑후 (20부)
@@ -183,6 +186,7 @@ export function FuCalculator() {
                     type="button"
                     className={`fc-special-btn ${input.special === 'chiitoi' ? 'on' : ''}`}
                     aria-pressed={input.special === 'chiitoi'}
+                    disabled={fuIrrelevant}
                     onClick={() => toggleSpecial('chiitoi')}
                 >
                     치또이 (25부)
@@ -202,14 +206,14 @@ export function FuCalculator() {
                     value={input.wait}
                     options={WAIT_OPTS}
                     onChange={(v) => setInput((p) => ({ ...p, wait: v }))}
-                    disabled={fuLocked}
+                    disabled={fuLocked || fuIrrelevant}
                 />
                 <Segmented
                     label="또이쯔 (머리)"
                     value={input.pair}
                     options={PAIR_OPTS}
                     onChange={(v) => setInput((p) => ({ ...p, pair: v }))}
-                    disabled={fuLocked}
+                    disabled={fuLocked || fuIrrelevant}
                 />
 
                 <div className="fc-field">
@@ -219,7 +223,7 @@ export function FuCalculator() {
                             type="button"
                             className={`seg-btn ${!pendingTerminal ? 'on' : ''}`}
                             aria-pressed={!pendingTerminal}
-                            disabled={fuLocked}
+                            disabled={fuLocked || fuIrrelevant}
                             onClick={() => setPendingTerminal(false)}
                         >
                             중장패
@@ -228,7 +232,7 @@ export function FuCalculator() {
                             type="button"
                             className={`seg-btn ${pendingTerminal ? 'on' : ''}`}
                             aria-pressed={pendingTerminal}
-                            disabled={fuLocked}
+                            disabled={fuLocked || fuIrrelevant}
                             onClick={() => setPendingTerminal(true)}
                         >
                             노두·자패
@@ -241,7 +245,7 @@ export function FuCalculator() {
                                 type="button"
                                 className={`seg-btn ${pendingKind === k.kind ? 'on' : ''}`}
                                 aria-pressed={pendingKind === k.kind}
-                                disabled={fuLocked}
+                                disabled={fuLocked || fuIrrelevant}
                                 onClick={() => setPendingKind(k.kind)}
                             >
                                 {k.label}
@@ -251,7 +255,7 @@ export function FuCalculator() {
                     <button
                         type="button"
                         className="btn ghost fc-add"
-                        disabled={fuLocked}
+                        disabled={fuLocked || fuIrrelevant}
                         onClick={addKotsu}
                     >
                         + 커쯔 추가 (
@@ -282,7 +286,7 @@ export function FuCalculator() {
                                             type="button"
                                             className="fc-kotsu-del"
                                             aria-label="삭제"
-                                            disabled={fuLocked}
+                                            disabled={fuLocked || fuIrrelevant}
                                             onClick={() => removeKotsu(i)}
                                         >
                                             ×
@@ -328,7 +332,11 @@ export function FuCalculator() {
                             {isDealer ? '친' : '자'} {input.winForm === 'tsumo' ? '쯔모' : '론'}
                         </span>
                         {score.limitName && (
-                            <span className="fc-score-limit">{score.limitName}</span>
+                            <span className="fc-score-limit">
+                                {score.limitName === '헤아림역만'
+                                    ? '(헤아림) 역만'
+                                    : score.limitName}
+                            </span>
                         )}
                     </div>
                     <div className="fc-score-value">

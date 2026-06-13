@@ -12,21 +12,27 @@ function renderAt(path: string): string {
 }
 
 describe('앱 스모크 테스트', () => {
-    it('홈: 트레이닝/유틸리티 그룹과 메뉴가 출력된다', () => {
+    it('홈: 라벨 없는 주요 메뉴와 더 알아보기 그룹이 출력된다 (#54)', () => {
         const html = renderAt('/');
         expect(html).toContain('론냐');
         expect(html).toContain('title-paw');
-        expect(html).toContain('점수 계산 연습');
+        // 주요 메뉴: 연습하기 / 계산하기 (트레이닝·유틸리티 그룹 라벨 제거)
+        expect(html).toContain('연습하기');
+        expect(html).toContain('계산하기');
         expect(html).toContain('href="/score"');
-        // 유틸리티 메뉴
+        expect(html).toContain('href="/calc"');
+        expect(html).not.toContain('트레이닝');
+        expect(html).not.toContain('유틸리티');
+        // 더 알아보기 그룹
+        expect(html).toContain('더 알아보기');
         expect(html).toContain('점수표');
         expect(html).toContain('역 목록');
         expect(html).toContain('부수 계산법');
         expect(html).toContain('href="/score-table"');
         expect(html).toContain('href="/yaku"');
         expect(html).toContain('href="/fu"');
-        // 유틸리티 그룹은 트레이닝 그룹 아래에 배치
-        expect(html.indexOf('트레이닝')).toBeLessThan(html.indexOf('유틸리티'));
+        // 더 알아보기 그룹은 주요 메뉴 아래에 배치
+        expect(html.indexOf('href="/calc"')).toBeLessThan(html.indexOf('더 알아보기'));
     });
 
     it('/score: 최초 진입 시 문제 대신 로딩 UI가 출력된다 (#32)', () => {

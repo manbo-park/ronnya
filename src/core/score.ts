@@ -346,7 +346,7 @@ function evaluate(
         else if (p.riichi === 1) yaku.push({ name: '리치', han: 1 });
         if (p.ippatsu) yaku.push({ name: '일발', han: 1 });
         if (tsumo) yaku.push({ name: '멘젠쯔모', han: 1 });
-        yaku.push({ name: '치또이츠', han: 2 });
+        yaku.push({ name: '치또이', han: 2 });
         if (allIds_(allTiles).every(isSimpleId)) yaku.push({ name: '탕야오', han: 1 });
         if (allIds_(allTiles).every(isTerminalOrHonorId)) yaku.push({ name: '혼노두', han: 2 });
     }
@@ -394,7 +394,7 @@ function computeFu(it: Interp, p: Problem, menzen: boolean): { fu: number; fuDet
     const tsumo = p.winType === 'tsumo';
 
     if (it.pattern === 'chiitoi') {
-        return { fu: 25, fuDetails: [{ reason: '치또이츠 (고정)', fu: 25 }] };
+        return { fu: 25, fuDetails: [{ reason: '치또이', fu: 25 }] };
     }
 
     const details: FuItem[] = [{ reason: '부저', fu: FU.base }];
@@ -453,7 +453,7 @@ function computeFu(it: Interp, p: Problem, menzen: boolean): { fu: number; fuDet
 
     // 쿠이핑후형: 후로 손에서 합계 20부 → 30부 처리
     if (!menzen && raw === 20) {
-        details.push({ reason: '울고 20부 (쿠이핑후형 보정)', fu: 10 });
+        details.push({ reason: '쿠이핑후형 보정', fu: 10 });
         raw = 30;
     }
 

@@ -31,12 +31,17 @@ describe('roundUpFu', () => {
 });
 
 describe('calcFu', () => {
-    it('핑후는 20부 고정', () => {
-        const r = calcFu({ ...base, special: 'pinfu' });
+    it('핑후 쯔모는 20부', () => {
+        const r = calcFu({ ...base, special: 'pinfu', winForm: 'tsumo' });
         expect(r).toMatchObject({ raw: 20, rounded: 20 });
     });
 
-    it('치또이츠는 25부 고정 (절상 없음)', () => {
+    it('핑후 멘젠 론은 30부 (멘젠 가산)', () => {
+        const r = calcFu({ ...base, special: 'pinfu', winForm: 'menzenRon' });
+        expect(r).toMatchObject({ raw: 30, rounded: 30 });
+    });
+
+    it('치또이는 25부 고정 (절상 없음)', () => {
         const r = calcFu({ ...base, special: 'chiitoi' });
         expect(r).toMatchObject({ raw: 25, rounded: 25 });
     });

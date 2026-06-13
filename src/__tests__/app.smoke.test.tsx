@@ -78,7 +78,7 @@ describe('앱 스모크 테스트', () => {
         expect(html).toContain('커쯔');
         expect(html).toContain('10부 단위 절상');
         // 주요 수치: 치또이 고정 25부, 안깡 노두·자패 32부, 절상 예시
-        expect(html).toContain('치또이츠');
+        expect(html).toContain('치또이');
         expect(html).toContain('25부');
         expect(html).toContain('32부');
         expect(html).toContain('40부');

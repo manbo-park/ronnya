@@ -4,7 +4,7 @@ import { ScoreTrainer } from './features/ScoreTrainer';
 import { ScoreTable } from './features/ScoreTable';
 import { YakuList } from './features/YakuList';
 import { FuGuide } from './features/FuGuide';
-import { FuCalculator } from './features/FuCalculator';
+import { Calculator } from './features/Calculator';
 
 export default function App() {
     return (
@@ -31,10 +31,10 @@ export default function App() {
                     }
                 />
                 <Route
-                    path="/fu-calc"
+                    path="/calc"
                     element={
-                        <Page title="부수 계산기" footer="작혼 룰 기준 · 연풍 또이쯔 4부">
-                            <FuCalculator />
+                        <Page title="점수 계산기" footer="작혼 룰 기준 · 연풍 또이쯔 4부">
+                            <Calculator />
                         </Page>
                     }
                 />

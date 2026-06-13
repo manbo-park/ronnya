@@ -19,7 +19,7 @@ const SECTIONS: FuSection[] = [
         rows: [
             { label: '부저', fu: '20부', note: '화료 형태와 무관하게 항상 더한다.' },
             {
-                label: '치또이츠',
+                label: '치또이',
                 fu: '25부',
                 note: '아래 가산·절상 없이 항상 25부 고정.',
             },
@@ -139,7 +139,7 @@ export function FuGuide() {
             <section className="fu-card">
                 <h2 className="fu-card-title">10부 단위 절상</h2>
                 <p className="fu-card-desc">
-                    항목을 모두 더한 합계의 1의 자리를 올려 10부 단위로 맞춘다. 치또이츠(25부)는
+                    항목을 모두 더한 합계의 1의 자리를 올려 10부 단위로 맞춘다. 치또이(25부)는
                     절상하지 않는다.
                 </p>
                 <div className="fu-example">

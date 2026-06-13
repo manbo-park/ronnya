@@ -109,7 +109,7 @@ export const YAKU: YakuDef[] = [
         example: ex('234m 456p 234s 678s 55z'),
     },
     {
-        name: '치또이츠',
+        name: '치또이',
         han: 2,
         yakuman: 0,
         closedOnly: true,

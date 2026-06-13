@@ -32,13 +32,13 @@ describe('채점 엔진 골든 케이스', () => {
         expect(r.payment).toEqual({ kind: 'tsumoNonDealer', dealer: 700, others: 400 });
     });
 
-    it('치또이츠 론 = 2판 25부, 1600', () => {
+    it('치또이 론 = 2판 25부, 1600', () => {
         const p = base({
             hand: parseTiles('1m1m3m3m5p5p7p7p9s9s1z1z4z'),
             winningTile: parseTiles('4z')[0],
         });
         const r = scoreHand(p);
-        expect(r.yaku.map((y) => y.name)).toContain('치또이츠');
+        expect(r.yaku.map((y) => y.name)).toContain('치또이');
         expect(r.fu).toBe(25);
         expect(r.payment).toEqual({ kind: 'ron', total: 1600 });
     });

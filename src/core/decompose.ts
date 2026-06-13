@@ -58,7 +58,7 @@ function extract(
     }
 }
 
-/** 치또이츠: 서로 다른 7종 또이쯔 (동일 패 4장을 2또이쯔로 인정하지 않음 — 작혼 기준) */
+/** 치또이: 서로 다른 7종 또이쯔 (동일 패 4장을 2또이쯔로 인정하지 않음 — 작혼 기준) */
 export function isChiitoi(counts: number[]): boolean {
     let pairs = 0;
     for (let i = 0; i < 34; i++) {

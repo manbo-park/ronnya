@@ -49,6 +49,7 @@ export interface FuInput {
 export interface FuBreakdownRow {
     label: string;
     fu: number;
+    dim?: boolean; // 절상 등 보조 표기 행
 }
 
 export interface FuResult {
@@ -89,10 +90,14 @@ const PAIR: Record<PairType, { label: string; fu: number }> = {
 
 export function calcFu(input: FuInput): FuResult {
     if (input.special === 'pinfu') {
-        return { raw: 20, rounded: 20, breakdown: [{ label: '핑후 (고정)', fu: 20 }] };
+        // 핑후 쯔모는 20부, 핑후 (멘젠) 론은 멘젠 가산으로 30부 (핑후는 멘젠 한정)
+        const isTsumo = input.winForm === 'tsumo';
+        const fu = isTsumo ? 20 : 30;
+        const label = isTsumo ? '핑후 쯔모' : '핑후 론';
+        return { raw: fu, rounded: fu, breakdown: [{ label, fu }] };
     }
     if (input.special === 'chiitoi') {
-        return { raw: 25, rounded: 25, breakdown: [{ label: '치또이츠 (고정)', fu: 25 }] };
+        return { raw: 25, rounded: 25, breakdown: [{ label: '치또이', fu: 25 }] };
     }
 
     const breakdown: FuBreakdownRow[] = [{ label: '부저', fu: FU.base }];
@@ -116,9 +121,14 @@ export function calcFu(input: FuInput): FuResult {
 
     // 쿠이핑후형: 후로 손에서 가산이 없어 20부면 30부로 처리
     if (input.winForm === 'furoRon' && raw === 20) {
-        breakdown.push({ label: '울고 20부 (쿠이핑후형 보정)', fu: 10 });
+        breakdown.push({ label: '쿠이핑후형 보정', fu: 10 });
         raw = 30;
     }
 
-    return { raw, rounded: roundUpFu(raw), breakdown };
+    const rounded = roundUpFu(raw);
+    if (rounded !== raw) {
+        breakdown.push({ label: '10부 단위 절상', fu: rounded - raw, dim: true });
+    }
+
+    return { raw, rounded, breakdown };
 }

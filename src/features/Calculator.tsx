@@ -16,7 +16,7 @@ type Mode = 'score' | 'fuOnly';
 
 const DEFAULT: FuInput = {
     special: 'none',
-    winForm: 'furoRon',
+    winForm: 'tsumo',
     wait: 'ryanmen',
     pair: 'normal',
     kotsu: [],

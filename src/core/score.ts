@@ -12,6 +12,7 @@ import {
 } from './tiles';
 import { decomposeStandard, isChiitoi, kokushiPair } from './decompose';
 import { computePoints } from './points';
+import { FU, kotsuFu, roundUpFu } from './fu';
 
 type WaitType = 'ryanmen' | 'kanchan' | 'penchan' | 'shanpon' | 'tanki';
 
@@ -396,7 +397,7 @@ function computeFu(it: Interp, p: Problem, menzen: boolean): { fu: number; fuDet
         return { fu: 25, fuDetails: [{ reason: '치또이츠 (고정)', fu: 25 }] };
     }
 
-    const details: FuItem[] = [{ reason: '부저', fu: 20 }];
+    const details: FuItem[] = [{ reason: '부저', fu: FU.base }];
     const pinfu =
         p.melds.length === 0 &&
         it.sets.every((s) => s.kind === 'run') &&
@@ -407,33 +408,33 @@ function computeFu(it: Interp, p: Problem, menzen: boolean): { fu: number; fuDet
         ) &&
         it.wait === 'ryanmen';
 
-    if (menzen && !tsumo) details.push({ reason: '멘젠 론', fu: 10 });
-    if (tsumo && !pinfu) details.push({ reason: '쯔모', fu: 2 });
+    if (menzen && !tsumo) details.push({ reason: '멘젠 론', fu: FU.menzenRon });
+    if (tsumo && !pinfu) details.push({ reason: '쯔모', fu: FU.tsumo });
 
     // 멘쯔 부수
     for (const s of it.sets) {
         if (s.kind === 'run') continue;
-        let fu = 2;
-        if (isTerminalOrHonorId(s.tile)) fu *= 2;
-        if (s.concealed) fu *= 2;
-        if (s.quad) fu *= 4;
-        const name = describeSet(s);
-        details.push({ reason: name, fu });
+        const fu = kotsuFu({
+            concealed: s.concealed,
+            quad: s.quad,
+            terminal: isTerminalOrHonorId(s.tile),
+        });
+        details.push({ reason: describeSet(s), fu });
     }
 
     // 또이쯔 부수 (작혼: 연풍 또이쯔 4부)
     let pairFu = 0;
     const reasons: string[] = [];
     if (it.pairId >= 31) {
-        pairFu += 2;
+        pairFu += FU.yakuhaiPair;
         reasons.push('역패');
     }
     if (it.pairId === 27 + (p.roundWind - 1)) {
-        pairFu += 2;
+        pairFu += FU.yakuhaiPair;
         reasons.push('장풍');
     }
     if (it.pairId === 27 + (p.seatWind - 1)) {
-        pairFu += 2;
+        pairFu += FU.yakuhaiPair;
         reasons.push('자풍');
     }
     if (pairFu > 0) {
@@ -445,7 +446,7 @@ function computeFu(it: Interp, p: Problem, menzen: boolean): { fu: number; fuDet
 
     // 대기 부수
     if (it.wait === 'kanchan' || it.wait === 'penchan' || it.wait === 'tanki') {
-        details.push({ reason: WAIT_NAMES[it.wait], fu: 2 });
+        details.push({ reason: WAIT_NAMES[it.wait], fu: FU.wait });
     }
 
     let raw = details.reduce((s, d) => s + d.fu, 0);
@@ -456,7 +457,7 @@ function computeFu(it: Interp, p: Problem, menzen: boolean): { fu: number; fuDet
         raw = 30;
     }
 
-    const fu = Math.ceil(raw / 10) * 10;
+    const fu = roundUpFu(raw);
     if (fu !== raw) details.push({ reason: '10부 단위 절상', fu: fu - raw, dim: true });
     return { fu, fuDetails: details };
 }

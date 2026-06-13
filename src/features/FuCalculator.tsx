@@ -10,6 +10,9 @@ import {
     type Wait,
     type WinForm,
 } from '../core/fu';
+import { computePoints, paymentText } from '../core/points';
+
+type Mode = 'score' | 'fuOnly';
 
 const DEFAULT: FuInput = {
     special: 'none',
@@ -40,6 +43,9 @@ const PAIR_OPTS: { value: PairType; label: string }[] = [
     { value: 'seatWind', label: '자풍' },
     { value: 'doubleWind', label: '연풍' },
 ];
+
+// 1~12판 + 13판 이상(헤아림역만)
+const HAN_OPTS = Array.from({ length: 13 }, (_, i) => i + 1);
 
 function Segmented<T extends string>({
     label,
@@ -76,12 +82,22 @@ function Segmented<T extends string>({
 }
 
 export function FuCalculator() {
+    const [mode, setMode] = useState<Mode>('score');
     const [input, setInput] = useState<FuInput>(DEFAULT);
+    const [isDealer, setIsDealer] = useState(false);
+    const [han, setHan] = useState(1);
     const [pendingTerminal, setPendingTerminal] = useState(false);
     const [pendingKind, setPendingKind] = useState<KotsuKind>('minko');
 
     const result = calcFu(input);
-    const locked = input.special !== 'none';
+    const fuLocked = input.special !== 'none';
+    // 점수 모드에선 쯔모/론을 점수에 써야 하므로 화료 형태는 핑후/치또이여도 활성
+    const winFormLocked = fuLocked && mode === 'fuOnly';
+
+    const score =
+        mode === 'score'
+            ? computePoints(han, result.rounded, 0, isDealer, input.winForm === 'tsumo')
+            : null;
 
     const toggleSpecial = (s: Special) =>
         setInput((p) => ({ ...p, special: p.special === s ? 'none' : s }));
@@ -97,12 +113,33 @@ export function FuCalculator() {
 
     const reset = () => {
         setInput(DEFAULT);
+        setIsDealer(false);
+        setHan(1);
         setPendingTerminal(false);
         setPendingKind('minko');
     };
 
     return (
         <div className="fu-calc">
+            <div className="fc-mode seg-group" role="group" aria-label="계산 모드">
+                <button
+                    type="button"
+                    className={`seg-btn ${mode === 'score' ? 'on' : ''}`}
+                    aria-pressed={mode === 'score'}
+                    onClick={() => setMode('score')}
+                >
+                    점수 계산하기
+                </button>
+                <button
+                    type="button"
+                    className={`seg-btn ${mode === 'fuOnly' ? 'on' : ''}`}
+                    aria-pressed={mode === 'fuOnly'}
+                    onClick={() => setMode('fuOnly')}
+                >
+                    부수만 계산하기
+                </button>
+            </div>
+
             <div className="fc-special">
                 <button
                     type="button"
@@ -122,27 +159,27 @@ export function FuCalculator() {
                 </button>
             </div>
 
-            <div className={`fc-body ${locked ? 'locked' : ''}`}>
+            <div className="fc-body">
                 <Segmented
                     label="화료 형태"
                     value={input.winForm}
                     options={WIN_FORM_OPTS}
                     onChange={(v) => setInput((p) => ({ ...p, winForm: v }))}
-                    disabled={locked}
+                    disabled={winFormLocked}
                 />
                 <Segmented
                     label="대기 형태"
                     value={input.wait}
                     options={WAIT_OPTS}
                     onChange={(v) => setInput((p) => ({ ...p, wait: v }))}
-                    disabled={locked}
+                    disabled={fuLocked}
                 />
                 <Segmented
                     label="또이쯔 (머리)"
                     value={input.pair}
                     options={PAIR_OPTS}
                     onChange={(v) => setInput((p) => ({ ...p, pair: v }))}
-                    disabled={locked}
+                    disabled={fuLocked}
                 />
 
                 <div className="fc-field">
@@ -152,7 +189,7 @@ export function FuCalculator() {
                             type="button"
                             className={`seg-btn ${!pendingTerminal ? 'on' : ''}`}
                             aria-pressed={!pendingTerminal}
-                            disabled={locked}
+                            disabled={fuLocked}
                             onClick={() => setPendingTerminal(false)}
                         >
                             중장패
@@ -161,7 +198,7 @@ export function FuCalculator() {
                             type="button"
                             className={`seg-btn ${pendingTerminal ? 'on' : ''}`}
                             aria-pressed={pendingTerminal}
-                            disabled={locked}
+                            disabled={fuLocked}
                             onClick={() => setPendingTerminal(true)}
                         >
                             노두·자패
@@ -174,7 +211,7 @@ export function FuCalculator() {
                                 type="button"
                                 className={`seg-btn ${pendingKind === k.kind ? 'on' : ''}`}
                                 aria-pressed={pendingKind === k.kind}
-                                disabled={locked}
+                                disabled={fuLocked}
                                 onClick={() => setPendingKind(k.kind)}
                             >
                                 {k.label}
@@ -184,7 +221,7 @@ export function FuCalculator() {
                     <button
                         type="button"
                         className="btn ghost fc-add"
-                        disabled={locked}
+                        disabled={fuLocked}
                         onClick={addKotsu}
                     >
                         + 커쯔 추가 (
@@ -215,7 +252,7 @@ export function FuCalculator() {
                                             type="button"
                                             className="fc-kotsu-del"
                                             aria-label="삭제"
-                                            disabled={locked}
+                                            disabled={fuLocked}
                                             onClick={() => removeKotsu(i)}
                                         >
                                             ×
@@ -226,6 +263,36 @@ export function FuCalculator() {
                         </ul>
                     )}
                 </div>
+
+                {mode === 'score' && (
+                    <>
+                        <Segmented
+                            label="자 / 친"
+                            value={isDealer ? 'dealer' : 'nonDealer'}
+                            options={[
+                                { value: 'nonDealer', label: '자 (비장가)' },
+                                { value: 'dealer', label: '친 (장가)' },
+                            ]}
+                            onChange={(v) => setIsDealer(v === 'dealer')}
+                        />
+                        <div className="fc-field">
+                            <span className="fc-field-label">판수</span>
+                            <div className="seg-group" role="group" aria-label="판수">
+                                {HAN_OPTS.map((h) => (
+                                    <button
+                                        key={h}
+                                        type="button"
+                                        className={`seg-btn ${han === h ? 'on' : ''}`}
+                                        aria-pressed={han === h}
+                                        onClick={() => setHan(h)}
+                                    >
+                                        {h >= 13 ? '13판↑' : `${h}판`}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
 
             <div className="fc-actions">
@@ -252,6 +319,23 @@ export function FuCalculator() {
                     <span className="fc-total-final">{result.rounded}부</span>
                 </div>
             </div>
+
+            {score && (
+                <div className="fc-score">
+                    <div className="fc-score-head">
+                        <span>
+                            {han >= 13 ? '13판↑' : `${han}판`} {result.rounded}부 ·{' '}
+                            {isDealer ? '친' : '자'} {input.winForm === 'tsumo' ? '쯔모' : '론'}
+                        </span>
+                        {score.limitName && (
+                            <span className="fc-score-limit">{score.limitName}</span>
+                        )}
+                    </div>
+                    <div className="fc-score-value">
+                        <b>{paymentText(score.payment)}</b> 점
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

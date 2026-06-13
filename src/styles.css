@@ -1217,11 +1217,6 @@ body {
     gap: 14px;
 }
 
-/* 핑후·치또이 고정 시 아래 입력은 흐리게 + 비활성 */
-.fc-body.locked {
-    opacity: 0.4;
-}
-
 .fc-field {
     display: flex;
     flex-direction: column;
@@ -1269,11 +1264,17 @@ body {
 
 .seg-btn:disabled {
     cursor: not-allowed;
+    opacity: 0.4;
 }
 
 .fc-add {
     margin-top: 2px;
     width: 100%;
+}
+
+.fc-add:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
 }
 
 .fc-kotsu-list {
@@ -1356,6 +1357,46 @@ body {
     color: var(--pop);
     font-size: 22px;
     font-weight: 700;
+}
+
+/* 모드 토글: 점수 계산 / 부수만 계산 */
+.fc-mode {
+    margin-bottom: 2px;
+}
+
+/* 점수 결과 */
+.fc-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 12px;
+    background: var(--bg-deep);
+    border: 2px solid var(--pop);
+    font-family: var(--font-px);
+}
+
+.fc-score-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.fc-score-limit {
+    color: var(--pop);
+    font-weight: 700;
+}
+
+.fc-score-value {
+    color: var(--text);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.fc-score-value b {
+    color: var(--pop);
 }
 
 /* 페이지 진입: 부수 계산법 카드(안내문 → 각 부수 카드)가 순서대로 떠오른다.

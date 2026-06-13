@@ -18,8 +18,8 @@
     --alert: #ff5d49;
     --info: #6ea8ff;
     --label: #b49aff;
-    /* 강조용 픽셀 폰트 (본문은 가독성을 위해 일반 고딕 유지) */
-    --font-px: 'Galmuri11', 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+    /* 픽셀 폰트(Galmuri11). 강조 요소에 명시적으로 지정한다 (본문도 동일 폰트 사용) */
+    --font-px: 'Galmuri11', 'Apple SD Gothic Neo', sans-serif;
     /* 유형 레이블 옆 멘젠 13장이 한 줄에 들어가는 크기.
        케이스(후로 유무 등)에 따라 패 크기가 달라지지 않도록 화면 폭으로만 정한다 (#29) */
     --tile-w: clamp(14px, calc((min(100vw, 480px) - 154px) / 13), 40px);
@@ -47,8 +47,9 @@ body {
     background-size: 24px 24px;
     min-height: 100vh;
     color: var(--text);
+    /* 본문도 픽셀 폰트(Galmuri11) 일반 굵기로 통일. CDN 미로딩 시 고딕으로 폴백 */
     font-family:
-        'Pretendard',
+        'Galmuri11',
         'Apple SD Gothic Neo',
         'Noto Sans KR',
         system-ui,

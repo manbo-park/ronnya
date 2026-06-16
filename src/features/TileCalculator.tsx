@@ -72,15 +72,34 @@ export function TileCalculator() {
     const avail = (id: number) => 4 - usedCount(id); // 패산에 남은 매수
     const hasMeldRoom = melds.length < 4 && hand.length <= 13 - 3 * (melds.length + 1);
 
+    const placedTiles = (): Tile[] => [
+        ...hand,
+        ...melds.flatMap((m) => m.tiles),
+        ...(winTile ? [winTile] : []),
+        ...dora,
+        ...ura,
+    ];
+
     // 적도라는 수트당 1장뿐
-    const redUsed = (suit: Suit) =>
-        [
-            ...hand,
-            ...melds.flatMap((m) => m.tiles),
-            ...(winTile ? [winTile] : []),
-            ...dora,
-            ...ura,
-        ].some((t) => t.suit === suit && t.red);
+    const redUsed = (suit: Suit) => placedTiles().some((t) => t.suit === suit && t.red);
+
+    // 5수패는 일반 3장 + 적도라 1장. 일반/적도라 잔여를 구분해 센다.
+    const isFiveId = (id: number) => id < 27 && id % 9 === 4;
+    const usedNormal = (id: number) =>
+        placedTiles().filter((t) => tileId(t) === id && !t.red).length;
+    const availNormal = (id: number) => (isFiveId(id) ? 3 : 4) - usedNormal(id);
+
+    // 후보 묶음을 현재 패산에 남은 패(일반/적도라 구분)로 실제로 만들 수 있는지
+    const constructible = (m: Meld): boolean => {
+        const needNormal = new Map<number, number>();
+        let needRedSuit: Suit | null = null;
+        for (const t of m.tiles) {
+            if (t.red) needRedSuit = t.suit;
+            else needNormal.set(tileId(t), (needNormal.get(tileId(t)) ?? 0) + 1);
+        }
+        for (const [id, need] of needNormal) if (availNormal(id) < need) return false;
+        return !(needRedSuit && redUsed(needRedSuit));
+    };
 
     const addMeld = (m: Meld) => {
         if (!hasMeldRoom) return;
@@ -125,7 +144,7 @@ export function TileCalculator() {
                     out.push(chiMeld(suit, base, called, fivePos));
                 }
             }
-            return out;
+            return out.filter(constructible);
         }
         const isFive = rank === 5;
         const froms: MeldFrom[] = ['left', 'across', 'right'];
@@ -157,7 +176,7 @@ export function TileCalculator() {
                 }
             }
         }
-        return out;
+        return out.filter(constructible);
     };
 
     const pick = (t: Tile) => {
@@ -230,18 +249,11 @@ export function TileCalculator() {
         }
     }
 
-    // 후로용: 클릭한 패로 묶음을 만들 수 있는지
-    const meldUnavailable = (t: Tile) => {
-        if (t.red && redUsed(t.suit)) return true; // 적도라는 수트당 1장
-        if (meldType === 'chi') return chiCandidates(t).length === 0;
-        return avail(tileId(t)) < (meldType === 'pon' ? 3 : 4);
-    };
-
     const pickerDisabled = (t: Tile) => {
-        if (target === 'meld') return melds.length >= 4 || meldUnavailable(t);
+        if (target === 'meld') return melds.length >= 4 || meldCandidates(t).length === 0;
         if (target === 'hand' && hand.length >= maxHand) return true;
-        if (t.red && redUsed(t.suit)) return true;
-        return avail(tileId(t)) < 1;
+        if (t.red) return redUsed(t.suit); // 적도라는 수트당 1장뿐
+        return availNormal(tileId(t)) < 1; // 일반패(5수패는 3장뿐)
     };
 
     return (

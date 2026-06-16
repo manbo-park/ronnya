@@ -1,6 +1,42 @@
-import type { Meld, Tile } from '../core/types';
-import { tileLabel } from '../core/tiles';
+import type { Meld, Suit, Tile } from '../core/types';
+import { SUITS, tileLabel } from '../core/tiles';
 import { TILE_URLS, faceUrl } from './tileAssets';
+
+const RANK_COUNT: Record<Suit, number> = { m: 9, p: 9, s: 9, z: 7 };
+
+/** 34종 패를 수트별 행으로 늘어놓은 입력용 그리드. 클릭 시 onPick(패) 호출. */
+export function TilePicker({
+    onPick,
+    disabled,
+}: {
+    onPick: (t: Tile) => void;
+    /** 패별 비활성 판정 (예: 이미 4장 사용) */
+    disabled?: (t: Tile) => boolean;
+}) {
+    return (
+        <div className="tile-picker">
+            {SUITS.map((suit) => (
+                <div className="tile-picker-row" key={suit}>
+                    {Array.from({ length: RANK_COUNT[suit] }, (_, i) => {
+                        const t: Tile = { suit, rank: i + 1 };
+                        return (
+                            <button
+                                key={i}
+                                type="button"
+                                className="tile-picker-btn"
+                                aria-label={tileLabel(t)}
+                                disabled={disabled?.(t)}
+                                onClick={() => onPick(t)}
+                            >
+                                <TileView tile={t} />
+                            </button>
+                        );
+                    })}
+                </div>
+            ))}
+        </div>
+    );
+}
 
 export function TileView({
     tile,

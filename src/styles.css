@@ -1216,6 +1216,38 @@ body {
     animation-delay: 0.16s;
 }
 
+/* 패 입력 그리드 (#64): 탭이 좁아 손가락으로 누르기 쉽도록 패를 키운다 */
+.tile-picker {
+    --tile-w: clamp(26px, 8vw, 38px);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tile-picker-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.tile-picker-btn {
+    padding: 2px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.tile-picker-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.tile-picker-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 1px;
+}
+
 .calc-checkbox {
     display: flex;
     align-items: center;

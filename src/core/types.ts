@@ -40,8 +40,10 @@ export interface Problem {
     /** 0=없음 1=리치 2=더블리치 */
     riichi: 0 | 1 | 2;
     ippatsu: boolean;
-    /** 왕패 (1 + 깡 수). 뒷도라는 미적용. */
+    /** 왕패 (1 + 깡 수) */
     doraIndicators: Tile[];
+    /** 뒷도라 표시패 (리치 화료 시에만 적용). 생략 시 미적용 */
+    uraIndicators?: Tile[];
 }
 
 export interface YakuItem {

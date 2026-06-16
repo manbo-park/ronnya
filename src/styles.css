@@ -1227,6 +1227,7 @@ body {
 .tile-picker-row {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 4px;
 }
 
@@ -1246,6 +1247,35 @@ body {
 .tile-picker-btn:focus-visible {
     outline: 2px solid var(--pop);
     outline-offset: 1px;
+}
+
+/* 패로 계산하기: 입력된 패 슬롯 (#64) */
+.tile-calc-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+}
+
+.tile-del-btn {
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.tile-del-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 1px;
+}
+
+.tile-calc-empty {
+    font-family: var(--font-px);
+    font-size: 12px;
+    color: var(--muted);
 }
 
 .calc-checkbox {

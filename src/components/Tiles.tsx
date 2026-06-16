@@ -4,7 +4,17 @@ import { TILE_URLS, faceUrl } from './tileAssets';
 
 const RANK_COUNT: Record<Suit, number> = { m: 9, p: 9, s: 9, z: 7 };
 
-/** 34종 패를 수트별 행으로 늘어놓은 입력용 그리드. 클릭 시 onPick(패) 호출. */
+// 수트별 입력 패: 수패는 1~9, 적5는 일반 5 바로 오른쪽. 자패는 1~7.
+function rowTiles(suit: Suit): Tile[] {
+    const tiles: Tile[] = [];
+    for (let r = 1; r <= RANK_COUNT[suit]; r++) {
+        tiles.push({ suit, rank: r });
+        if (r === 5 && suit !== 'z') tiles.push({ suit, rank: 5, red: true });
+    }
+    return tiles;
+}
+
+/** 34종 패 + 적5를 수트별 행으로 늘어놓은 입력용 그리드. 클릭 시 onPick(패) 호출. */
 export function TilePicker({
     onPick,
     disabled,
@@ -17,21 +27,18 @@ export function TilePicker({
         <div className="tile-picker">
             {SUITS.map((suit) => (
                 <div className="tile-picker-row" key={suit}>
-                    {Array.from({ length: RANK_COUNT[suit] }, (_, i) => {
-                        const t: Tile = { suit, rank: i + 1 };
-                        return (
-                            <button
-                                key={i}
-                                type="button"
-                                className="tile-picker-btn"
-                                aria-label={tileLabel(t)}
-                                disabled={disabled?.(t)}
-                                onClick={() => onPick(t)}
-                            >
-                                <TileView tile={t} />
-                            </button>
-                        );
-                    })}
+                    {rowTiles(suit).map((t, i) => (
+                        <button
+                            key={i}
+                            type="button"
+                            className="tile-picker-btn"
+                            aria-label={tileLabel(t)}
+                            disabled={disabled?.(t)}
+                            onClick={() => onPick(t)}
+                        >
+                            <TileView tile={t} />
+                        </button>
+                    ))}
                 </div>
             ))}
         </div>

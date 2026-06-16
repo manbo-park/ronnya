@@ -1216,6 +1216,24 @@ body {
     animation-delay: 0.16s;
 }
 
+.calc-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-px);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.calc-checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--pop);
+    cursor: pointer;
+}
+
 .calc-special {
     display: flex;
     gap: 8px;

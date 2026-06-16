@@ -12,8 +12,6 @@ import {
 } from '../core/fu';
 import { computePoints, paymentText } from '../core/points';
 
-type Mode = 'score' | 'fuOnly';
-
 const DEFAULT: FuInput = {
     special: 'none',
     winForm: 'tsumo',
@@ -82,7 +80,7 @@ function Segmented<T extends string>({
 }
 
 export function Calculator() {
-    const [mode, setMode] = useState<Mode>('score');
+    const [fuOnly, setFuOnly] = useState(false);
     const [input, setInput] = useState<FuInput>(DEFAULT);
     const [isDealer, setIsDealer] = useState(false);
     const [han, setHan] = useState(1);
@@ -92,10 +90,10 @@ export function Calculator() {
     const result = calcFu(input);
     const fuLocked = input.special !== 'none';
     // 점수 모드에서 만관 이상(5판+)은 부수가 점수에 무의미하므로 부수 입력을 비활성
-    const fuIrrelevant = mode === 'score' && han >= 5;
+    const fuIrrelevant = !fuOnly && han >= 5;
     // 화료 형태(쯔모/론)는 점수의 쯔모·론과 핑후 부수(쯔모 20 / 론 30)를 가른다.
     // 부수가 화료 형태와 무관한 치또이(25 고정)만, 부수만 모드에서 잠근다.
-    const winFormLocked = input.special === 'chiitoi' && mode === 'fuOnly';
+    const winFormLocked = input.special === 'chiitoi' && fuOnly;
     // 1판이 불가능한 형태: 치또이(2판 확정) / 핑후+쯔모(핑후1+멘젠쯔모1)
     const hanFloorTwo =
         input.special === 'chiitoi' || (input.special === 'pinfu' && input.winForm === 'tsumo');
@@ -115,10 +113,9 @@ export function Calculator() {
         terminal: pendingTerminal,
     });
 
-    const score =
-        mode === 'score'
-            ? computePoints(han, result.rounded, 0, isDealer, input.winForm === 'tsumo')
-            : null;
+    const score = !fuOnly
+        ? computePoints(han, result.rounded, 0, isDealer, input.winForm === 'tsumo')
+        : null;
 
     const toggleSpecial = (s: Special) => {
         setInput((p) => {
@@ -161,27 +158,22 @@ export function Calculator() {
     return (
         <div className="calc">
             <div className="tab-bar" role="group" aria-label="계산 모드">
-                <button
-                    type="button"
-                    className={`tab-btn ${mode === 'score' ? 'on' : ''}`}
-                    aria-pressed={mode === 'score'}
-                    onClick={() => setMode('score')}
-                >
-                    점수 계산하기
-                </button>
-                <button
-                    type="button"
-                    className={`tab-btn ${mode === 'fuOnly' ? 'on' : ''}`}
-                    aria-pressed={mode === 'fuOnly'}
-                    onClick={() => setMode('fuOnly')}
-                >
-                    부수만 계산하기
+                <button type="button" className="tab-btn on" aria-pressed="true">
+                    부수/판수로 계산하기
                 </button>
             </div>
 
-            {/* 탭 전환 시 key가 바뀌어 콘텐츠 전체가 다시 마운트되며 진입 애니메이션이 재생된다 */}
-            <div className="calc-content" key={mode}>
-                {mode === 'score' && (
+            <div className="calc-content">
+                <label className="calc-checkbox">
+                    <input
+                        type="checkbox"
+                        checked={fuOnly}
+                        onChange={(e) => setFuOnly(e.target.checked)}
+                    />
+                    부수만 계산하기
+                </label>
+
+                {!fuOnly && (
                     <>
                         <Segmented
                             label="자 / 친"

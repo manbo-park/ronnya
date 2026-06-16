@@ -51,7 +51,7 @@ export function TileCalculator() {
 
     const [roundWind, setRoundWind] = useState<1 | 2>(1);
     const [seatWind, setSeatWind] = useState<1 | 2 | 3 | 4>(1);
-    const [winType, setWinType] = useState<'tsumo' | 'ron'>('ron');
+    const [winType, setWinType] = useState<'tsumo' | 'ron'>('tsumo');
     const [riichi, setRiichi] = useState<0 | 1 | 2>(0);
     const [honba, setHonba] = useState(0);
 
@@ -208,7 +208,7 @@ export function TileCalculator() {
         setPendingTile(null);
         setRoundWind(1);
         setSeatWind(1);
-        setWinType('ron');
+        setWinType('tsumo');
         setRiichi(0);
         setHonba(0);
     };

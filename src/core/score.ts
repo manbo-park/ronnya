@@ -127,7 +127,7 @@ export function scoreHand(p: Problem): ScoringResult {
     for (const it of interps) {
         const ev = evaluate(it, p, counts, allTiles, menzen, w);
         if (ev.yakumanUnits === 0 && ev.yaku.filter((y) => !y.isDora).length === 0) continue; // 역 없음
-        const pts = computePoints(ev.han, ev.fu, ev.yakumanUnits, isDealer, tsumo);
+        const pts = computePoints(ev.han, ev.fu, ev.yakumanUnits, isDealer, tsumo, p.honba ?? 0);
         if (
             best === null ||
             pts.totalReceived > best.pts.totalReceived ||

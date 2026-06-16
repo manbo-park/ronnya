@@ -44,6 +44,8 @@ export interface Problem {
     doraIndicators: Tile[];
     /** 뒷도라 표시패 (리치 화료 시에만 적용). 생략 시 미적용 */
     uraIndicators?: Tile[];
+    /** 본장 수. 생략 시 0본장 */
+    honba?: number;
 }
 
 export interface YakuItem {

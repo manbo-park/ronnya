@@ -63,6 +63,21 @@ describe('점수 테이블', () => {
         expect(kazoe.payment).toEqual({ kind: 'ron', total: 32000 });
     });
 
+    it('본장: 자 론 1판 30부 2본장 = 1600점', () => {
+        const r = computePoints(1, 30, 0, false, false, 2);
+        expect(r.payment).toEqual({ kind: 'ron', total: 1600 });
+    });
+
+    it('본장: 자 쯔모 3판 30부 1본장 = 1100/2100', () => {
+        const r = computePoints(3, 30, 0, false, true, 1);
+        expect(r.payment).toEqual({ kind: 'tsumoNonDealer', dealer: 2100, others: 1100 });
+    });
+
+    it('본장: 친 쯔모 1판 30부 3본장 = 800올', () => {
+        const r = computePoints(1, 30, 0, true, true, 3);
+        expect(r.payment).toEqual({ kind: 'tsumoDealer', each: 800 });
+    });
+
     it('역만/더블역만 지불', () => {
         expect(computePoints(0, 0, 1, false, false).payment).toEqual({ kind: 'ron', total: 32000 });
         expect(computePoints(0, 0, 1, true, false).payment).toEqual({ kind: 'ron', total: 48000 });

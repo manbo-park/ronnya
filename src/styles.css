@@ -1278,6 +1278,32 @@ body {
     color: var(--muted);
 }
 
+/* 치 후보: 받은 패로 만들 수 있는 슌쯔들을 미리보기로 나열 */
+.chi-candidates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chi-candidate {
+    padding: 6px 8px;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+    cursor: pointer;
+    line-height: 0;
+}
+
+.chi-candidate.on,
+.chi-candidate:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 1px;
+}
+
+.chi-candidate:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 .calc-checkbox {
     display: flex;
     align-items: center;

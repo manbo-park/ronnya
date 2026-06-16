@@ -127,7 +127,7 @@ export function scoreHand(p: Problem): ScoringResult {
     for (const it of interps) {
         const ev = evaluate(it, p, counts, allTiles, menzen, w);
         if (ev.yakumanUnits === 0 && ev.yaku.filter((y) => !y.isDora).length === 0) continue; // 역 없음
-        const pts = computePoints(ev.han, ev.fu, ev.yakumanUnits, isDealer, tsumo);
+        const pts = computePoints(ev.han, ev.fu, ev.yakumanUnits, isDealer, tsumo, p.honba ?? 0);
         if (
             best === null ||
             pts.totalReceived > best.pts.totalReceived ||
@@ -366,13 +366,11 @@ function evaluate(
         }
     }
 
-    // 도라/적도라
-    let dora = 0;
-    for (const ind of p.doraIndicators) {
-        const d = nextDoraId(tileId(ind));
-        dora += allTiles.filter((t) => tileId(t) === d).length;
-    }
+    // 도라/뒷도라/적도라
+    const dora = countDora(p.doraIndicators, allTiles);
     if (dora > 0) yaku.push({ name: '도라', han: dora, isDora: true });
+    const ura = p.uraIndicators ? countDora(p.uraIndicators, allTiles) : 0;
+    if (ura > 0) yaku.push({ name: '뒷도라', han: ura, isDora: true });
     const aka = allTiles.filter((t) => t.red).length;
     if (aka > 0) yaku.push({ name: '적도라', han: aka, isDora: true });
 
@@ -383,6 +381,15 @@ function evaluate(
 
 function allIds_(tiles: Tile[]): number[] {
     return tiles.map(tileId);
+}
+
+function countDora(indicators: Tile[], allTiles: Tile[]): number {
+    let n = 0;
+    for (const ind of indicators) {
+        const d = nextDoraId(tileId(ind));
+        n += allTiles.filter((t) => tileId(t) === d).length;
+    }
+    return n;
 }
 
 function finalizeYakuman(yaku: YakuItem[]): Evaluated {
@@ -480,6 +487,7 @@ function assertTileCounts(p: Problem): void {
     add(p.winningTile);
     for (const m of p.melds) for (const t of m.tiles) add(t);
     for (const t of p.doraIndicators) add(t);
+    if (p.uraIndicators) for (const t of p.uraIndicators) add(t);
     for (let i = 0; i < 34; i++) {
         if (used[i] > 4) throw new Error(`패 매수 초과: id=${i}`);
     }

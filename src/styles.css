@@ -1216,6 +1216,112 @@ body {
     animation-delay: 0.16s;
 }
 
+/* 패 입력 그리드 (#64): 탭이 좁아 손가락으로 누르기 쉽도록 패를 키운다 */
+.tile-picker {
+    --tile-w: clamp(26px, 8vw, 38px);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tile-picker-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+}
+
+.tile-picker-btn {
+    padding: 2px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.tile-picker-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.tile-picker-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 1px;
+}
+
+/* 패로 계산하기: 입력된 패 슬롯 (#64) */
+.tile-calc-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+}
+
+.tile-del-btn {
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.tile-del-btn:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 1px;
+}
+
+.tile-calc-empty {
+    font-family: var(--font-px);
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* 치 후보: 받은 패로 만들 수 있는 슌쯔들을 미리보기로 나열 */
+.chi-candidates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chi-candidate {
+    padding: 6px 8px;
+    background: var(--bg-deep);
+    border: 2px solid var(--panel-edge);
+    cursor: pointer;
+    line-height: 0;
+}
+
+.chi-candidate.on,
+.chi-candidate:focus-visible {
+    outline: 2px solid var(--pop);
+    outline-offset: 1px;
+}
+
+.chi-candidate:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.calc-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-px);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.calc-checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--pop);
+    cursor: pointer;
+}
+
 .calc-special {
     display: flex;
     gap: 8px;

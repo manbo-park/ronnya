@@ -23,6 +23,7 @@ export function computePoints(
     yakumanUnits: number,
     isDealer: boolean,
     tsumo: boolean,
+    honba = 0,
 ): PointsResult {
     let base: number;
     let limitName: string | undefined;
@@ -53,21 +54,22 @@ export function computePoints(
         }
     }
 
+    // 본장: 1본장당 총 300점. 쯔모는 지불자별 +100, 론은 방총자가 +300 부담
     let payment: Payment;
     let totalReceived: number;
     if (tsumo) {
         if (isDealer) {
-            const each = roundUp100(base * 2);
+            const each = roundUp100(base * 2) + honba * 100;
             payment = { kind: 'tsumoDealer', each };
             totalReceived = each * 3;
         } else {
-            const dealer = roundUp100(base * 2);
-            const others = roundUp100(base);
+            const dealer = roundUp100(base * 2) + honba * 100;
+            const others = roundUp100(base) + honba * 100;
             payment = { kind: 'tsumoNonDealer', dealer, others };
             totalReceived = dealer + others * 2;
         }
     } else {
-        const total = roundUp100(base * (isDealer ? 6 : 4));
+        const total = roundUp100(base * (isDealer ? 6 : 4)) + honba * 300;
         payment = { kind: 'ron', total };
         totalReceived = total;
     }

@@ -127,6 +127,22 @@ describe('채점 엔진 골든 케이스', () => {
         expect(r.han).toBe(4);
     });
 
+    it('뒷도라: 리치 론 핑후 + 뒷도라 1', () => {
+        const p = base({
+            hand: parseTiles('234m567m23p567s99p'),
+            winningTile: parseTiles('4p')[0],
+            riichi: 1,
+            uraIndicators: parseTiles('1p'), // 뒷도라 = 2p (손패에 1장)
+        });
+        const r = scoreHand(p);
+        const ura = r.yaku.find((y) => y.name === '뒷도라');
+        expect(ura?.han).toBe(1);
+        const names = r.yaku.map((y) => y.name);
+        expect(names).toContain('리치');
+        expect(names).toContain('핑후');
+        expect(r.han).toBe(3);
+    });
+
     it('역 없는 화료는 예외 발생', () => {
         const p = base({
             hand: parseTiles('234m567m24p567s1z1z'),
